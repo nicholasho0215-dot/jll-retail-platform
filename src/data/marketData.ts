@@ -5,8 +5,6 @@ export interface RetailCluster {
   id: string;
   name: string;
   tier: "Prime" | "City Fringe" | "Suburban";
-  x: number; // position on SVG map (0-800)
-  y: number; // position on SVG map (0-400)
   rentPsf: number; // S$ psf/month, prime floor
   rentChangeYoY: number; // %
   vacancy: number; // %
@@ -21,7 +19,6 @@ export const clusters: RetailCluster[] = [
     id: "orchard",
     name: "Orchard Road",
     tier: "Prime",
-    x: 366, y: 196,
     rentPsf: 36.4, rentChangeYoY: 3.2, vacancy: 6.1, intensity: 1.0,
     keyMalls: ["ION Orchard", "Ngee Ann City", "Paragon", "Plaza Singapura", "313@Somerset"],
     hotCategories: ["Luxury", "Beauty", "Flagship F&B"],
@@ -31,7 +28,6 @@ export const clusters: RetailCluster[] = [
     id: "marina",
     name: "Marina Bay / Downtown",
     tier: "Prime",
-    x: 448, y: 274,
     rentPsf: 32.8, rentChangeYoY: 2.5, vacancy: 7.4, intensity: 0.85,
     keyMalls: ["Marina Bay Sands", "Marina Square", "Suntec City", "Raffles City"],
     hotCategories: ["Luxury", "Experiential", "Premium F&B"],
@@ -41,7 +37,6 @@ export const clusters: RetailCluster[] = [
     id: "bugis",
     name: "City Hall / Bugis",
     tier: "Prime",
-    x: 428, y: 224,
     rentPsf: 28.6, rentChangeYoY: 2.1, vacancy: 5.8, intensity: 0.8,
     keyMalls: ["Bugis Junction", "Bugis+", "Funan", "CityLink Mall"],
     hotCategories: ["Youth Fashion", "F&B", "Lifestyle"],
@@ -51,7 +46,6 @@ export const clusters: RetailCluster[] = [
     id: "chinatown",
     name: "Chinatown / Tanjong Pagar",
     tier: "City Fringe",
-    x: 388, y: 266,
     rentPsf: 22.4, rentChangeYoY: 1.8, vacancy: 8.2, intensity: 0.6,
     keyMalls: ["100AM", "Chinatown Point", "Guoco Tower retail"],
     hotCategories: ["F&B", "Korean concepts", "Wellness"],
@@ -61,7 +55,6 @@ export const clusters: RetailCluster[] = [
     id: "harbourfront",
     name: "HarbourFront / Sentosa",
     tier: "City Fringe",
-    x: 330, y: 296,
     rentPsf: 24.1, rentChangeYoY: 1.2, vacancy: 6.9, intensity: 0.65,
     keyMalls: ["VivoCity", "HarbourFront Centre"],
     hotCategories: ["Family", "F&B", "Athleisure"],
@@ -71,7 +64,6 @@ export const clusters: RetailCluster[] = [
     id: "paya-lebar",
     name: "Paya Lebar / Katong",
     tier: "City Fringe",
-    x: 502, y: 218,
     rentPsf: 20.8, rentChangeYoY: 2.4, vacancy: 7.1, intensity: 0.55,
     keyMalls: ["PLQ Mall", "Paya Lebar Square", "i12 Katong", "Parkway Parade"],
     hotCategories: ["F&B", "Enrichment", "Fitness"],
@@ -81,7 +73,6 @@ export const clusters: RetailCluster[] = [
     id: "tampines",
     name: "Tampines",
     tier: "Suburban",
-    x: 560, y: 198,
     rentPsf: 19.6, rentChangeYoY: 2.8, vacancy: 4.3, intensity: 0.7,
     keyMalls: ["Tampines Mall", "Century Square", "Tampines 1"],
     hotCategories: ["Family", "Fast Fashion", "F&B"],
@@ -91,7 +82,6 @@ export const clusters: RetailCluster[] = [
     id: "jurong",
     name: "Jurong East",
     tier: "Suburban",
-    x: 248, y: 238,
     rentPsf: 19.2, rentChangeYoY: 3.5, vacancy: 4.8, intensity: 0.7,
     keyMalls: ["Jem", "Westgate", "IMM (outlet)"],
     hotCategories: ["Outlet", "Family", "F&B"],
@@ -101,7 +91,6 @@ export const clusters: RetailCluster[] = [
     id: "woodlands",
     name: "Woodlands",
     tier: "Suburban",
-    x: 348, y: 108,
     rentPsf: 17.8, rentChangeYoY: 1.9, vacancy: 5.2, intensity: 0.5,
     keyMalls: ["Causeway Point", "Woods Square"],
     hotCategories: ["Value", "F&B", "Services"],
@@ -111,7 +100,6 @@ export const clusters: RetailCluster[] = [
     id: "serangoon",
     name: "Serangoon / Hougang",
     tier: "Suburban",
-    x: 458, y: 168,
     rentPsf: 18.9, rentChangeYoY: 2.2, vacancy: 4.6, intensity: 0.6,
     keyMalls: ["NEX", "Hougang Mall", "Heartland Mall"],
     hotCategories: ["Family", "F&B", "Enrichment"],
@@ -121,7 +109,6 @@ export const clusters: RetailCluster[] = [
     id: "punggol",
     name: "Punggol / Sengkang",
     tier: "Suburban",
-    x: 498, y: 138,
     rentPsf: 17.2, rentChangeYoY: 3.1, vacancy: 5.5, intensity: 0.5,
     keyMalls: ["Waterway Point", "Compass One", "Punggol Coast Mall"],
     hotCategories: ["Family", "Enrichment", "F&B"],
@@ -131,7 +118,6 @@ export const clusters: RetailCluster[] = [
     id: "bishan",
     name: "Bishan / AMK",
     tier: "Suburban",
-    x: 408, y: 158,
     rentPsf: 18.4, rentChangeYoY: 1.6, vacancy: 4.9, intensity: 0.55,
     keyMalls: ["Junction 8", "AMK Hub"],
     hotCategories: ["F&B", "Services", "Value Fashion"],

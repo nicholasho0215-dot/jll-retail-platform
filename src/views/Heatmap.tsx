@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { clusters, type RetailCluster } from "@/data/marketData";
+import { islandPaths, clusterXY, MAP_W, MAP_H } from "@/data/sgOutline";
 import { cn } from "@/lib/utils";
 
 // warm heat ramp: low → amber, high → JLL red
@@ -13,13 +14,21 @@ function heatColor(intensity: number) {
   return "#f4c659";
 }
 
-const islandPath =
-  "M60,268 C70,250 95,238 112,230 C135,218 152,210 168,198 C186,184 200,172 222,158 " +
-  "C248,140 270,124 296,110 C318,98 338,88 356,86 C378,84 398,92 420,100 " +
-  "C444,108 466,108 488,114 C510,120 538,124 562,132 C600,144 650,156 696,170 " +
-  "C718,177 736,182 740,188 C736,198 712,206 690,214 C664,224 636,234 606,244 " +
-  "C576,254 548,260 520,266 C492,272 468,282 444,288 C420,294 396,297 372,296 " +
-  "C344,295 314,290 286,286 C252,281 214,282 178,284 C140,287 104,282 80,276 C68,273 60,270 60,268 Z";
+// label placement per cluster — downtown is dense, so labels fan outward
+const labelPos: Record<string, { dx: number; dy: number; anchor: "start" | "middle" | "end" }> = {
+  orchard: { dx: -20, dy: -20, anchor: "end" },
+  marina: { dx: 14, dy: 26, anchor: "start" },
+  bugis: { dx: 22, dy: -6, anchor: "start" },
+  chinatown: { dx: -18, dy: 14, anchor: "end" },
+  harbourfront: { dx: -14, dy: 22, anchor: "end" },
+  "paya-lebar": { dx: 16, dy: 16, anchor: "start" },
+  tampines: { dx: 0, dy: 26, anchor: "middle" },
+  jurong: { dx: 0, dy: -16, anchor: "middle" },
+  woodlands: { dx: 0, dy: -18, anchor: "middle" },
+  serangoon: { dx: 18, dy: -10, anchor: "start" },
+  punggol: { dx: 14, dy: -14, anchor: "start" },
+  bishan: { dx: -18, dy: -10, anchor: "end" },
+};
 
 export function Heatmap() {
   const [selected, setSelected] = useState<RetailCluster>(clusters[0]);
@@ -39,30 +48,36 @@ export function Heatmap() {
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#d6202f" }} /> Hottest
             </div>
           </div>
-          <svg viewBox="0 0 800 400" className="w-full" role="img" aria-label="Singapore retail cluster heatmap">
+          <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} className="w-full" role="img" aria-label="Singapore retail cluster heatmap">
             {/* sea */}
-            <rect width="800" height="400" rx="16" fill="#eaf3f6" />
-            {/* island */}
-            <path d={islandPath} fill="#fbf7ef" stroke="#d9cfbd" strokeWidth="1.5" />
-            {/* sentosa */}
-            <ellipse cx="372" cy="330" rx="26" ry="11" fill="#fbf7ef" stroke="#d9cfbd" strokeWidth="1.5" />
-            <text x="372" y="354" textAnchor="middle" fontSize="10" fill="#9b8f7d" fontWeight="600">Sentosa</text>
+            <rect width={MAP_W} height={MAP_H} rx="16" fill="#e7f1f5" />
+            {/* real Singapore coastline (GADM boundary data) */}
+            {islandPaths.map((d, i) => (
+              <path key={i} d={d} fill="#fbf7ef" stroke="#cfc4ae" strokeWidth="1.2" strokeLinejoin="round" />
+            ))}
 
             {clusters.map((c) => {
-              const r = 9 + (c.rentPsf - 17) * 0.85;
+              const pos = clusterXY[c.id];
+              if (!pos) return null;
+              const r = 7 + (c.rentPsf - 17) * 0.62;
               const isSel = selected.id === c.id;
+              const lp = labelPos[c.id] ?? { dx: 0, dy: r + 14, anchor: "middle" as const };
               return (
                 <g key={c.id} onClick={() => setSelected(c)} style={{ cursor: "pointer" }}>
-                  <circle cx={c.x} cy={c.y} r={r + 7} fill={heatColor(c.intensity)} opacity={isSel ? 0.25 : 0.12} />
+                  <circle cx={pos.x} cy={pos.y} r={r + 6} fill={heatColor(c.intensity)} opacity={isSel ? 0.28 : 0.13} />
                   <circle
-                    cx={c.x} cy={c.y} r={r}
-                    fill={heatColor(c.intensity)} opacity={0.92}
+                    cx={pos.x} cy={pos.y} r={r}
+                    fill={heatColor(c.intensity)} opacity={0.94}
                     stroke={isSel ? "#1f2937" : "#ffffff"} strokeWidth={isSel ? 2.5 : 1.5}
                   />
-                  <text x={c.x} y={c.y + 3.5} textAnchor="middle" fontSize="10" fontWeight="800" fill="#fff">
+                  <text x={pos.x} y={pos.y + 3.5} textAnchor="middle" fontSize="10" fontWeight="800" fill="#fff">
                     ${c.rentPsf.toFixed(0)}
                   </text>
-                  <text x={c.x} y={c.y + r + 14} textAnchor="middle" fontSize="11" fontWeight="700" fill="#4b4435">
+                  <text
+                    x={pos.x + lp.dx} y={pos.y + lp.dy}
+                    textAnchor={lp.anchor} fontSize="11" fontWeight="700" fill="#4b4435"
+                    paintOrder="stroke" stroke="#fbf7ef" strokeWidth="3"
+                  >
                     {c.name.split(" / ")[0]}
                   </text>
                 </g>
