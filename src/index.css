@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 30% 98%;
+    --foreground: 222 30% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 30% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 30% 14%;
+    --primary: 355 90% 46%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 25% 94%;
+    --secondary-foreground: 222 30% 14%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 222 12% 45%;
+    --accent: 24 95% 95%;
+    --accent-foreground: 17 80% 35%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 35 20% 88%;
+    --input: 35 20% 88%;
+    --ring: 355 90% 46%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  .tabular-nums {
+    font-feature-settings: "tnum" on;
+  }
+}
