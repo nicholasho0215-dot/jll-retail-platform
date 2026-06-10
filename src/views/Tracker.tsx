@@ -37,7 +37,7 @@ export function Tracker() {
 
   return (
     <div className="space-y-5">
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
         <Card className="rounded-2xl shadow-sm border-border/70">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
             <div className="h-11 w-11 rounded-xl bg-emerald-100 flex items-center justify-center">

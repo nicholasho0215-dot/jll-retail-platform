@@ -1,73 +1,40 @@
-# React + TypeScript + Vite
+# Retail Pulse · Singapore Retail Intelligence
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A retail leasing intelligence platform for the Singapore market — market KPIs, an
+interactive cluster heatmap, store open/close tracking, curated news, a team deal
+pipeline and a data-grounded market assistant.
 
-Currently, two official plugins are available:
+**Live site:** https://nicholasho0215-dot.github.io/jll-retail-platform/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Views
 
-## React Compiler
+- **Market Pulse** — KPIs, prime rent trends and the new supply pipeline
+- **Retail Heatmap** — interactive Leaflet map of retail clusters (bubble size = rent, colour = leasing heat)
+- **Open / Close Tracker** — store movements with category and signal filters
+- **News Desk** — curated headlines with AI summaries and bookmarking
+- **Deal Pipeline** — kanban board of team deals plus a lease expiry radar
+- **Market Assistant** — chat answers grounded in the platform dataset
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+React 19 · TypeScript · Vite · Tailwind CSS · shadcn/ui · Recharts · React Leaflet
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Development
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm install
+npm run dev      # local dev server
+npm run build    # type-check + production build to dist/
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deploying
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+GitHub Pages serves the `gh-pages` branch. To publish, build and push `dist/`:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm run build
+git subtree push --prefix dist origin gh-pages   # or your preferred gh-pages helper
 ```
+
+Data is a static Q1 2026 snapshot (URA, SingStat, STB & curated news); a production
+build would connect live APIs.

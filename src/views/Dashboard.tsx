@@ -32,7 +32,7 @@ function KpiCard({ k }: { k: { value: number; change: number; label: string; uni
 export function Dashboard() {
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
         {Object.values(kpis).map((k) => <KpiCard key={k.label} k={k} />)}
       </div>
 
@@ -42,7 +42,7 @@ export function Dashboard() {
             <CardTitle className="text-[15px] font-bold">Prime Floor Rents by Submarket</CardTitle>
             <p className="text-[12px] text-muted-foreground">S$ psf/month · URA REALIS basis</p>
           </CardHeader>
-          <CardContent className="h-[260px]">
+          <CardContent className="h-[220px] sm:h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={rentalTrend} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee5d8" />
@@ -62,7 +62,7 @@ export function Dashboard() {
             <CardTitle className="text-[15px] font-bold">Island-wide Vacancy Rate</CardTitle>
             <p className="text-[12px] text-muted-foreground">% of retail NLA · tightening 8 quarters straight</p>
           </CardHeader>
-          <CardContent className="h-[260px]">
+          <CardContent className="h-[220px] sm:h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={vacancyTrend} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
                 <defs>

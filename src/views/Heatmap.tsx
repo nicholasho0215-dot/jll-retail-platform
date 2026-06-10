@@ -47,7 +47,7 @@ export function Heatmap() {
     <div className="grid xl:grid-cols-[1fr_340px] gap-5">
       <Card className="rounded-2xl shadow-sm border-border/70 overflow-hidden">
         <CardContent className="p-4">
-          <div className="flex items-center justify-between px-2 pt-1 pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-2 pt-1 pb-3">
             <div>
               <h3 className="text-[15px] font-bold">Retail Cluster Heatmap</h3>
               <p className="text-[12px] text-muted-foreground">Bubble size = prime rent · colour = leasing heat · click a cluster</p>
@@ -58,7 +58,7 @@ export function Heatmap() {
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#d6202f" }} /> Hottest
             </div>
           </div>
-          <div className="rounded-xl overflow-hidden border border-border/60" style={{ height: 480 }}>
+          <div className="relative z-0 isolate rounded-xl overflow-hidden border border-border/60 h-[340px] sm:h-[420px] xl:h-[480px]">
             <MapContainer
               center={[1.335, 103.84]}
               zoom={11}
