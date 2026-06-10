@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { clusters, type RetailCluster } from "@/data/marketData";
-import { islandPaths, clusterXY, MAP_W, MAP_H } from "@/data/sgOutline";
 import { cn } from "@/lib/utils";
 
 // warm heat ramp: low → amber, high → JLL red
@@ -14,21 +16,29 @@ function heatColor(intensity: number) {
   return "#f4c659";
 }
 
-// label placement per cluster — downtown is dense, so labels fan outward
-const labelPos: Record<string, { dx: number; dy: number; anchor: "start" | "middle" | "end" }> = {
-  orchard: { dx: -20, dy: -20, anchor: "end" },
-  marina: { dx: 14, dy: 26, anchor: "start" },
-  bugis: { dx: 22, dy: -6, anchor: "start" },
-  chinatown: { dx: -18, dy: 14, anchor: "end" },
-  harbourfront: { dx: -14, dy: 22, anchor: "end" },
-  "paya-lebar": { dx: 16, dy: 16, anchor: "start" },
-  tampines: { dx: 0, dy: 26, anchor: "middle" },
-  jurong: { dx: 0, dy: -16, anchor: "middle" },
-  woodlands: { dx: 0, dy: -18, anchor: "middle" },
-  serangoon: { dx: 18, dy: -10, anchor: "start" },
-  punggol: { dx: 14, dy: -14, anchor: "start" },
-  bishan: { dx: -18, dy: -10, anchor: "end" },
-};
+function bubbleIcon(c: RetailCluster, isSelected: boolean) {
+  const d = Math.round(30 + (c.rentPsf - 17) * 1.1); // diameter scales with rent
+  const color = heatColor(c.intensity);
+  const ring = isSelected ? "#1f2937" : "#ffffff";
+  const label = c.name.split(" / ")[0];
+  return L.divIcon({
+    className: "",
+    html: `
+      <div style="display:flex;flex-direction:column;align-items:center;font-family:'Plus Jakarta Sans',system-ui,sans-serif;">
+        <div style="width:${d}px;height:${d}px;border-radius:50%;background:${color};border:2.5px solid ${ring};
+          box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;
+          color:#fff;font-weight:800;font-size:11px;letter-spacing:-0.2px;">
+          $${c.rentPsf.toFixed(0)}
+        </div>
+        <div style="margin-top:3px;font-size:11px;font-weight:700;color:#1f2937;white-space:nowrap;
+          background:rgba(255,255,255,.88);padding:1px 7px;border-radius:99px;box-shadow:0 1px 3px rgba(0,0,0,.15);">
+          ${label}
+        </div>
+      </div>`,
+    iconSize: [d, d + 24],
+    iconAnchor: [d / 2, d / 2], // circle centred on the location; label hangs below
+  });
+}
 
 export function Heatmap() {
   const [selected, setSelected] = useState<RetailCluster>(clusters[0]);
@@ -48,42 +58,30 @@ export function Heatmap() {
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#d6202f" }} /> Hottest
             </div>
           </div>
-          <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} className="w-full" role="img" aria-label="Singapore retail cluster heatmap">
-            {/* sea */}
-            <rect width={MAP_W} height={MAP_H} rx="16" fill="#e7f1f5" />
-            {/* real Singapore coastline (GADM boundary data) */}
-            {islandPaths.map((d, i) => (
-              <path key={i} d={d} fill="#fbf7ef" stroke="#cfc4ae" strokeWidth="1.2" strokeLinejoin="round" />
-            ))}
-
-            {clusters.map((c) => {
-              const pos = clusterXY[c.id];
-              if (!pos) return null;
-              const r = 7 + (c.rentPsf - 17) * 0.62;
-              const isSel = selected.id === c.id;
-              const lp = labelPos[c.id] ?? { dx: 0, dy: r + 14, anchor: "middle" as const };
-              return (
-                <g key={c.id} onClick={() => setSelected(c)} style={{ cursor: "pointer" }}>
-                  <circle cx={pos.x} cy={pos.y} r={r + 6} fill={heatColor(c.intensity)} opacity={isSel ? 0.28 : 0.13} />
-                  <circle
-                    cx={pos.x} cy={pos.y} r={r}
-                    fill={heatColor(c.intensity)} opacity={0.94}
-                    stroke={isSel ? "#1f2937" : "#ffffff"} strokeWidth={isSel ? 2.5 : 1.5}
-                  />
-                  <text x={pos.x} y={pos.y + 3.5} textAnchor="middle" fontSize="10" fontWeight="800" fill="#fff">
-                    ${c.rentPsf.toFixed(0)}
-                  </text>
-                  <text
-                    x={pos.x + lp.dx} y={pos.y + lp.dy}
-                    textAnchor={lp.anchor} fontSize="11" fontWeight="700" fill="#4b4435"
-                    paintOrder="stroke" stroke="#fbf7ef" strokeWidth="3"
-                  >
-                    {c.name.split(" / ")[0]}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+          <div className="rounded-xl overflow-hidden border border-border/60" style={{ height: 480 }}>
+            <MapContainer
+              center={[1.335, 103.84]}
+              zoom={11}
+              minZoom={10}
+              maxZoom={17}
+              scrollWheelZoom={false}
+              style={{ height: "100%", width: "100%", background: "#e7f1f5" }}
+            >
+              <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              />
+              {clusters.map((c) => (
+                <Marker
+                  key={`${c.id}-${selected.id === c.id}`}
+                  position={[c.lat, c.lng]}
+                  icon={bubbleIcon(c, selected.id === c.id)}
+                  eventHandlers={{ click: () => setSelected(c) }}
+                  zIndexOffset={selected.id === c.id ? 1000 : Math.round(c.rentPsf * 10)}
+                />
+              ))}
+            </MapContainer>
+          </div>
         </CardContent>
       </Card>
 

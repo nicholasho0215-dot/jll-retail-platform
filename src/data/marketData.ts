@@ -5,6 +5,8 @@ export interface RetailCluster {
   id: string;
   name: string;
   tier: "Prime" | "City Fringe" | "Suburban";
+  lat: number;
+  lng: number;
   rentPsf: number; // S$ psf/month, prime floor
   rentChangeYoY: number; // %
   vacancy: number; // %
@@ -17,6 +19,7 @@ export interface RetailCluster {
 export const clusters: RetailCluster[] = [
   {
     id: "orchard",
+    lat: 1.3048, lng: 103.8318,
     name: "Orchard Road",
     tier: "Prime",
     rentPsf: 36.4, rentChangeYoY: 3.2, vacancy: 6.1, intensity: 1.0,
@@ -26,6 +29,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "marina",
+    lat: 1.2835, lng: 103.859,
     name: "Marina Bay / Downtown",
     tier: "Prime",
     rentPsf: 32.8, rentChangeYoY: 2.5, vacancy: 7.4, intensity: 0.85,
@@ -35,6 +39,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "bugis",
+    lat: 1.2966, lng: 103.853,
     name: "City Hall / Bugis",
     tier: "Prime",
     rentPsf: 28.6, rentChangeYoY: 2.1, vacancy: 5.8, intensity: 0.8,
@@ -44,6 +49,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "chinatown",
+    lat: 1.2785, lng: 103.8442,
     name: "Chinatown / Tanjong Pagar",
     tier: "City Fringe",
     rentPsf: 22.4, rentChangeYoY: 1.8, vacancy: 8.2, intensity: 0.6,
@@ -53,6 +59,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "harbourfront",
+    lat: 1.2654, lng: 103.8222,
     name: "HarbourFront / Sentosa",
     tier: "City Fringe",
     rentPsf: 24.1, rentChangeYoY: 1.2, vacancy: 6.9, intensity: 0.65,
@@ -62,6 +69,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "paya-lebar",
+    lat: 1.3177, lng: 103.8927,
     name: "Paya Lebar / Katong",
     tier: "City Fringe",
     rentPsf: 20.8, rentChangeYoY: 2.4, vacancy: 7.1, intensity: 0.55,
@@ -71,6 +79,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "tampines",
+    lat: 1.3536, lng: 103.945,
     name: "Tampines",
     tier: "Suburban",
     rentPsf: 19.6, rentChangeYoY: 2.8, vacancy: 4.3, intensity: 0.7,
@@ -80,6 +89,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "jurong",
+    lat: 1.3331, lng: 103.743,
     name: "Jurong East",
     tier: "Suburban",
     rentPsf: 19.2, rentChangeYoY: 3.5, vacancy: 4.8, intensity: 0.7,
@@ -89,6 +99,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "woodlands",
+    lat: 1.436, lng: 103.786,
     name: "Woodlands",
     tier: "Suburban",
     rentPsf: 17.8, rentChangeYoY: 1.9, vacancy: 5.2, intensity: 0.5,
@@ -98,6 +109,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "serangoon",
+    lat: 1.3506, lng: 103.8718,
     name: "Serangoon / Hougang",
     tier: "Suburban",
     rentPsf: 18.9, rentChangeYoY: 2.2, vacancy: 4.6, intensity: 0.6,
@@ -107,6 +119,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "punggol",
+    lat: 1.4063, lng: 103.9021,
     name: "Punggol / Sengkang",
     tier: "Suburban",
     rentPsf: 17.2, rentChangeYoY: 3.1, vacancy: 5.5, intensity: 0.5,
@@ -116,6 +129,7 @@ export const clusters: RetailCluster[] = [
   },
   {
     id: "bishan",
+    lat: 1.36, lng: 103.8485,
     name: "Bishan / AMK",
     tier: "Suburban",
     rentPsf: 18.4, rentChangeYoY: 1.6, vacancy: 4.9, intensity: 0.55,
