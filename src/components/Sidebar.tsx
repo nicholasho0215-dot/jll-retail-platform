@@ -1,4 +1,4 @@
-import { LayoutDashboard, Map, Store, Newspaper, KanbanSquare, Sparkles } from "lucide-react";
+import { LayoutDashboard, Map, Store, Newspaper, KanbanSquare, Sparkles, Activity, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ViewId = "dashboard" | "heatmap" | "tracker" | "news" | "pipeline" | "assistant";
@@ -12,27 +12,51 @@ const navItems: { id: ViewId; label: string; icon: typeof Map; hint: string }[] 
   { id: "assistant", label: "Assistant", icon: Sparkles, hint: "Ask the market" },
 ];
 
-export function Sidebar({ active, onNavigate }: { active: ViewId; onNavigate: (v: ViewId) => void }) {
+export function Sidebar({
+  active,
+  onNavigate,
+  open,
+  onClose,
+}: {
+  active: ViewId;
+  onNavigate: (v: ViewId) => void;
+  open: boolean;
+  onClose: () => void;
+}) {
   return (
-    <aside className="w-60 shrink-0 border-r bg-card flex flex-col">
-      <div className="px-5 pt-6 pb-5">
+    <aside
+      className={cn(
+        "fixed inset-y-0 left-0 z-50 w-[272px] border-r bg-card flex flex-col",
+        "transition-transform duration-300 ease-out",
+        open ? "translate-x-0 shadow-2xl" : "-translate-x-full",
+        "lg:static lg:z-auto lg:w-60 lg:shrink-0 lg:translate-x-0 lg:shadow-none lg:transition-none"
+      )}
+    >
+      <div className="px-5 pt-6 pb-5 flex items-start justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-extrabold text-sm tracking-tight">
-            JLL
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#e8552d] to-[#c41324] flex items-center justify-center text-white shadow-sm">
+            <Activity className="h-5 w-5" strokeWidth={2.6} />
           </div>
           <div>
-            <div className="font-bold text-[15px] leading-tight">Retail Intelligence</div>
-            <div className="text-[11px] text-muted-foreground font-medium">Singapore · Leasing</div>
+            <div className="font-extrabold text-[15px] leading-tight tracking-tight">Retail Pulse</div>
+            <div className="text-[11px] text-muted-foreground font-medium">Singapore · JLL Leasing</div>
           </div>
         </div>
+        <button
+          onClick={onClose}
+          aria-label="Close menu"
+          className="lg:hidden rounded-lg p-1.5 -mr-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <X className="h-[18px] w-[18px]" />
+        </button>
       </div>
-      <nav className="px-3 flex-1 space-y-1">
+      <nav className="px-3 flex-1 space-y-1 overflow-y-auto">
         {navItems.map(({ id, label, icon: Icon, hint }) => (
           <button
             key={id}
             onClick={() => onNavigate(id)}
             className={cn(
-              "w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
+              "w-full flex items-center gap-3 rounded-xl px-3 py-3 lg:py-2.5 text-left transition-colors",
               active === id
                 ? "bg-accent text-accent-foreground"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -46,7 +70,7 @@ export function Sidebar({ active, onNavigate }: { active: ViewId; onNavigate: (v
           </button>
         ))}
       </nav>
-      <div className="p-4 m-3 mb-4 rounded-xl bg-muted/60 text-[11px] leading-relaxed text-muted-foreground">
+      <div className="p-4 m-3 mb-[max(1rem,env(safe-area-inset-bottom))] rounded-xl bg-muted/60 text-[11px] leading-relaxed text-muted-foreground">
         <span className="font-semibold text-foreground">Data snapshot:</span> Q1 2026 · URA, SingStat, STB & curated news. Production build connects live APIs.
       </div>
     </aside>

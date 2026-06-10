@@ -33,6 +33,10 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image:
+      radial-gradient(1100px 520px at 85% -10%, hsl(24 95% 92% / 0.5), transparent 60%),
+      radial-gradient(900px 480px at -10% 5%, hsl(355 85% 94% / 0.35), transparent 55%);
+    background-attachment: fixed;
   }
   .tabular-nums {
     font-feature-settings: "tnum" on;

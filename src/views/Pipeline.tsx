@@ -31,11 +31,11 @@ export function Pipeline() {
         <span><span className="text-[18px] font-extrabold text-foreground tabular-nums">{deals.filter(d => d.stage === "Negotiating" || d.stage === "Legal").length}</span> in closing stages</span>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 items-start">
+      <div className="flex gap-3 overflow-x-auto snap-x pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0 items-start">
         {stages.map((stage) => {
           const stageDeals = deals.filter((d) => d.stage === stage);
           return (
-            <div key={stage} className="space-y-2.5">
+            <div key={stage} className="w-[240px] shrink-0 snap-start space-y-2.5 lg:w-auto">
               <div className="flex items-center justify-between px-1">
                 <span className="text-[12px] font-extrabold uppercase tracking-wide text-muted-foreground">{stage}</span>
                 <span className="text-[11px] font-bold text-muted-foreground tabular-nums">{stageDeals.length}</span>
