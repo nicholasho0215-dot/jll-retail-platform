@@ -10,7 +10,7 @@ const stageColors: Record<Deal["stage"], string> = {
   Prospecting: "border-t-slate-300",
   Viewing: "border-t-sky-400",
   Negotiating: "border-t-amber-400",
-  Legal: "border-t-violet-400",
+  Legal: "border-t-zinc-800",
   Signed: "border-t-emerald-500",
 };
 
@@ -26,9 +26,9 @@ export function Pipeline() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] font-semibold text-muted-foreground">
-        <span><span className="text-[18px] font-extrabold text-foreground tabular-nums">{deals.length}</span> active deals</span>
-        <span><span className="text-[18px] font-extrabold text-foreground tabular-nums">S${(totalValue / 1000).toFixed(1)}M</span> est. annual rent</span>
-        <span><span className="text-[18px] font-extrabold text-foreground tabular-nums">{deals.filter(d => d.stage === "Negotiating" || d.stage === "Legal").length}</span> in closing stages</span>
+        <span><span className="font-display text-[20px] font-bold text-foreground tabular-nums">{deals.length}</span> active deals</span>
+        <span><span className="font-display text-[20px] font-bold text-foreground tabular-nums">S${(totalValue / 1000).toFixed(1)}M</span> est. annual rent</span>
+        <span><span className="font-display text-[20px] font-bold text-foreground tabular-nums">{deals.filter(d => d.stage === "Negotiating" || d.stage === "Legal").length}</span> in closing stages</span>
       </div>
 
       <div className="flex gap-3 overflow-x-auto snap-x pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0 items-start">
@@ -41,7 +41,7 @@ export function Pipeline() {
                 <span className="text-[11px] font-bold text-muted-foreground tabular-nums">{stageDeals.length}</span>
               </div>
               {stageDeals.map((d) => (
-                <Card key={d.id} className={cn("rounded-xl shadow-sm border-border/70 border-t-[3px] card-lift", stageColors[stage])}>
+                <Card key={d.id} className={cn("rounded-lg border-t-[3px] card-lift", stageColors[stage])}>
                   <CardContent className="p-3">
                     <div className="font-bold text-[13px] leading-tight">{d.tenant}</div>
                     <div className="text-[11px] text-muted-foreground font-medium mt-0.5">{d.requirement}</div>
@@ -64,9 +64,9 @@ export function Pipeline() {
         })}
       </div>
 
-      <Card className="rounded-2xl shadow-sm border-border/70">
+      <Card className="rounded-xl">
         <CardHeader className="pb-3">
-          <CardTitle className="text-[15px] font-bold flex items-center gap-2">
+          <CardTitle className="font-display text-[13px] font-bold uppercase tracking-[0.08em] flex items-center gap-2">
             <CalendarClock className="h-4 w-4 text-primary" />
             Lease Expiry Radar
           </CardTitle>

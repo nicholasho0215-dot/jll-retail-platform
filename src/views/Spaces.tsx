@@ -68,7 +68,7 @@ export function Spaces() {
   const stats = [
     { icon: DoorOpen, iconCls: "bg-emerald-100 text-emerald-600", value: String(vacantNow), label: "units vacant now" },
     { icon: CalendarClock, iconCls: "bg-amber-100 text-amber-600", value: String(upcoming), label: "freeing up ≤ 9 months" },
-    { icon: AlertTriangle, iconCls: "bg-violet-100 text-violet-600", value: `${(totalSqft / 1000).toFixed(1)}k`, label: "sqft on the market" },
+    { icon: AlertTriangle, iconCls: "bg-zinc-900/10 text-zinc-900", value: `${(totalSqft / 1000).toFixed(1)}k`, label: "sqft on the market" },
     { icon: Search, iconCls: "bg-sky-100 text-sky-600", value: `S$${avgPsf.toFixed(1)}`, label: "avg asking psf/mo" },
   ];
 
@@ -82,13 +82,13 @@ export function Spaces() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.06, ease: "easeOut" }}
           >
-            <Card className="rounded-2xl shadow-sm border-border/70 card-lift h-full">
+            <Card className="rounded-xl card-lift h-full">
               <CardContent className="pt-4 pb-4 flex items-center gap-3">
                 <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shrink-0", s.iconCls)}>
                   <s.icon className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[20px] font-extrabold tabular-nums leading-none">{s.value}</div>
+                  <div className="font-display text-[22px] font-bold tabular-nums leading-none">{s.value}</div>
                   <div className="text-[11.5px] font-semibold text-muted-foreground mt-1 leading-tight">{s.label}</div>
                 </div>
               </CardContent>
@@ -144,7 +144,7 @@ export function Spaces() {
           const now = m.units.filter((u) => u.status === "vacant").length;
           const soon = m.units.length - now;
           return (
-            <Card key={m.mall} className="rounded-2xl shadow-sm border-border/70 overflow-hidden">
+            <Card key={m.mall} className="rounded-xl overflow-hidden">
               <button onClick={() => toggle(m.mall)} className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left hover:bg-muted/30 transition-colors">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">

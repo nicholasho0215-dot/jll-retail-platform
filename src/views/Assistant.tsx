@@ -88,7 +88,7 @@ export function Assistant() {
   };
 
   return (
-    <Card className="rounded-2xl shadow-sm border-border/70 max-w-3xl mx-auto flex flex-col h-[calc(100dvh-330px)] lg:h-[calc(100dvh-280px)] min-h-[380px]">
+    <Card className="rounded-xl max-w-3xl mx-auto flex flex-col h-[calc(100dvh-330px)] lg:h-[calc(100dvh-280px)] min-h-[380px]">
       <CardContent className="flex flex-col flex-1 min-h-0 pt-4">
         {/* Mode bar */}
         <div className="flex items-center gap-2 pb-3 border-b border-border/60">

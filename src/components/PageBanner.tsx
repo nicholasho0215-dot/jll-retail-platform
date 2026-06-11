@@ -90,12 +90,11 @@ export function PageBanner({ view }: { view: ViewId }) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl mb-5 sm:mb-6 bg-[#171a22] shadow-md",
-        tall ? "h-44 sm:h-60" : "h-32 sm:h-40"
+        "relative overflow-hidden rounded-xl mb-8 sm:mb-10 bg-[#14161c]",
+        tall ? "h-48 sm:h-72" : "h-36 sm:h-48"
       )}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1b1e28] via-[#241820] to-[#451522]" />
-      <Skyline className="absolute bottom-0 left-0 w-full h-[70%] text-white/[0.08]" />
+      <Skyline className="absolute bottom-0 left-0 w-full h-[70%] text-white/[0.07]" />
       <div className="absolute inset-0 kenburns">
         <motion.img
           key={view}
@@ -104,40 +103,45 @@ export function PageBanner({ view }: { view: ViewId }) {
           loading={tall ? "eager" : "lazy"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="h-full w-full object-cover"
           onError={(e) => {
             e.currentTarget.style.display = "none";
           }}
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/15" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-      <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#e8552d] to-[#c41324]" />
+      {/* Single legibility scrim — darkest where the text sits */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
 
       {tall && (
-        <div className="absolute right-4 sm:right-6 top-4 sm:top-5 hidden sm:block text-right">
-          <div className="text-[13px] font-bold text-white drop-shadow">{greeting()} 👋</div>
-          <div className="text-[12px] text-white/70 font-medium">
+        <div className="absolute right-4 sm:right-8 top-4 sm:top-6 hidden sm:block text-right">
+          <div className="text-[13px] font-bold text-white">{greeting()}</div>
+          <div className="text-[11.5px] text-white/65 font-medium tabular-nums">
             {new Date().toLocaleDateString("en-SG", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
       )}
 
-      <div className="relative h-full flex flex-col justify-end px-4 sm:px-6 pb-4 sm:pb-5">
+      <div className="relative h-full flex flex-col justify-end px-5 sm:px-8 pb-5 sm:pb-7">
         <motion.div
           key={view}
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
         >
-          <div className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-[#ff8d7a] mb-1">
-            JLL Singapore · Retail
+          <div className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/60 mb-2">
+            JLL Singapore <span className="text-[#ff5a5a]">/</span> Retail Intelligence
           </div>
-          <h1 className={cn("text-white font-extrabold tracking-tight drop-shadow", tall ? "text-[26px] sm:text-[32px]" : "text-[21px] sm:text-[26px]")}>
+          <h1
+            className={cn(
+              "font-display text-white font-black uppercase leading-[0.95] tracking-[-0.01em]",
+              tall ? "text-[34px] sm:text-[54px]" : "text-[26px] sm:text-[38px]"
+            )}
+          >
             {m.title}
           </h1>
-          <p className="text-white/75 text-[12.5px] sm:text-[13.5px] font-medium mt-0.5 max-w-[36rem]">{m.subtitle}</p>
+          <div className="mt-3 h-[3px] w-12 bg-[#e0162b]" />
+          <p className="text-white/70 text-[12.5px] sm:text-[13.5px] font-medium mt-3 max-w-[34rem]">{m.subtitle}</p>
         </motion.div>
       </div>
     </div>

@@ -51,11 +51,11 @@ export function Heatmap() {
 
   return (
     <div className="grid xl:grid-cols-[1fr_340px] gap-5">
-      <Card className="rounded-2xl shadow-sm border-border/70 overflow-hidden">
+      <Card className="rounded-xl overflow-hidden">
         <CardContent className="p-4">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-2 pt-1 pb-3">
             <div>
-              <h3 className="text-[15px] font-bold">Retail Cluster Heatmap</h3>
+              <h3 className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Retail Cluster Heatmap</h3>
               <p className="text-[12px] text-muted-foreground">Bubble size = prime rent · colour = leasing heat · click a cluster</p>
             </div>
             <div className="flex items-center gap-2 text-[11px] font-semibold text-muted-foreground">
@@ -92,10 +92,10 @@ export function Heatmap() {
       </Card>
 
       <div className="space-y-4">
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-xl">
           <CardContent className="pt-5">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-[17px] font-extrabold leading-tight">{selected.name}</h3>
+              <h3 className="font-display text-[18px] font-black leading-tight tracking-tight">{selected.name}</h3>
               <Badge
                 className={cn(
                   "rounded-full font-bold text-[10.5px] shrink-0",
@@ -110,15 +110,15 @@ export function Heatmap() {
 
             <div className="grid grid-cols-3 gap-2.5 mt-4">
               <div className="rounded-xl bg-muted/50 p-3 text-center">
-                <div className="text-[18px] font-extrabold tabular-nums">${selected.rentPsf}</div>
+                <div className="font-display text-[18px] font-bold tabular-nums">${selected.rentPsf}</div>
                 <div className="text-[10.5px] font-semibold text-muted-foreground">psf/mo</div>
               </div>
               <div className="rounded-xl bg-muted/50 p-3 text-center">
-                <div className="text-[18px] font-extrabold tabular-nums text-emerald-600">+{selected.rentChangeYoY}%</div>
+                <div className="font-display text-[18px] font-bold tabular-nums text-emerald-600">+{selected.rentChangeYoY}%</div>
                 <div className="text-[10.5px] font-semibold text-muted-foreground">rent y-o-y</div>
               </div>
               <div className="rounded-xl bg-muted/50 p-3 text-center">
-                <div className="text-[18px] font-extrabold tabular-nums">{selected.vacancy}%</div>
+                <div className="font-display text-[18px] font-bold tabular-nums">{selected.vacancy}%</div>
                 <div className="text-[10.5px] font-semibold text-muted-foreground">vacancy</div>
               </div>
             </div>
@@ -145,9 +145,9 @@ export function Heatmap() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-xl">
           <CardContent className="pt-4 pb-3">
-            <div className="text-[12px] font-bold mb-2.5">All clusters by rent</div>
+            <div className="font-display text-[12px] font-bold uppercase tracking-[0.08em] mb-2.5">All clusters by rent</div>
             <div className="space-y-1">
               {[...clusters].sort((a, b) => b.rentPsf - a.rentPsf).map((c) => (
                 <button

@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 40 30% 98%;
-    --foreground: 222 30% 14%;
+    --background: 40 25% 97%;
+    --foreground: 222 30% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222 30% 14%;
+    --card-foreground: 222 30% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 30% 14%;
-    --primary: 355 90% 46%;
+    --popover-foreground: 222 30% 10%;
+    --primary: 353 82% 42%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 25% 94%;
-    --secondary-foreground: 222 30% 14%;
-    --muted: 40 20% 94%;
-    --muted-foreground: 222 12% 45%;
-    --accent: 24 95% 95%;
-    --accent-foreground: 17 80% 35%;
+    --secondary: 40 22% 93%;
+    --secondary-foreground: 222 30% 10%;
+    --muted: 40 18% 93%;
+    --muted-foreground: 222 10% 42%;
+    --accent: 40 22% 91%;
+    --accent-foreground: 222 30% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 35 20% 88%;
-    --input: 35 20% 88%;
-    --ring: 355 90% 46%;
-    --radius: 1rem;
+    --border: 40 12% 86%;
+    --input: 40 12% 84%;
+    --ring: 353 82% 42%;
+    --radius: 0.625rem;
   }
 }
 
@@ -33,23 +33,20 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-image:
-      radial-gradient(1100px 520px at 85% -10%, hsl(24 95% 92% / 0.5), transparent 60%),
-      radial-gradient(900px 480px at -10% 5%, hsl(355 85% 94% / 0.35), transparent 55%);
-    background-attachment: fixed;
   }
   .tabular-nums {
     font-feature-settings: "tnum" on;
   }
 }
 
-/* Motion: hero Ken Burns drift, ticker marquee, heatmap radar pings, card lift */
+/* Motion: hero drift, ticker marquee, heatmap radar pings, card hover.
+   All transitions deliberately fast (150ms) and subtle. */
 @keyframes kenburns {
-  from { transform: scale(1.05) translate(0, 0); }
-  to { transform: scale(1.16) translate(-1.5%, -2%); }
+  from { transform: scale(1.04) translate(0, 0); }
+  to { transform: scale(1.12) translate(-1.2%, -1.5%); }
 }
 .kenburns {
-  animation: kenburns 26s ease-in-out infinite alternate;
+  animation: kenburns 32s ease-in-out infinite alternate;
   will-change: transform;
 }
 
@@ -76,11 +73,11 @@
 }
 
 .card-lift {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 150ms ease, transform 150ms ease;
 }
 .card-lift:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.22);
+  border-color: hsl(222 30% 10% / 0.35);
+  transform: translateY(-1px);
 }
 
 @media (prefers-reduced-motion: reduce) {
