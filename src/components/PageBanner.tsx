@@ -2,46 +2,45 @@ import { motion } from "framer-motion";
 import type { ViewId } from "@/components/Sidebar";
 import { cn } from "@/lib/utils";
 
-// Unsplash download endpoints (Unsplash License — free to use, hotlinking via
-// the official per-photo download URL). Banners degrade to the gradient +
-// skyline silhouette below if an image fails to load.
-const unsplash = (id: string) => `https://unsplash.com/photos/${id}/download?w=1600`;
+// Self-hosted banner photography (public/img/, optimized at build time).
+// Banners degrade to the skyline silhouette below if an image fails to load.
+const img = (name: string) => `${import.meta.env.BASE_URL}img/${name}`;
 
 const meta: Record<ViewId, { title: string; subtitle: string; img: string }> = {
   dashboard: {
     title: "Market Pulse",
     subtitle: "Singapore retail at a glance — refreshed every morning",
-    img: unsplash("IRhO5KF0YVc"), // Marina Bay CBD skyline after sunset
+    img: img("marina-dusk.jpg"), // Marina Bay blue hour with the Flyer
   },
   heatmap: {
     title: "Retail Heatmap",
     subtitle: "Where the leasing heat is across the island",
-    img: unsplash("KZhMBYzKtNg"), // Orchard Road street scene
+    img: img("island-panorama.jpg"), // bay panorama with reflections
   },
   spaces: {
     title: "Space Finder",
     subtitle: "Vacant and expiring units, mall by mall — spot the next opportunity",
-    img: unsplash("b3ubz8yNlEI"), // Jewel Changi Rain Vortex interior
+    img: img("cbd-night.jpg"), // CBD towers at night
   },
   tracker: {
     title: "Open / Close Tracker",
     subtitle: "Who's moving in, who's moving out",
-    img: unsplash("nH8nIhD4IJo"), // Chinatown shophouse street with lanterns
+    img: img("shophouses.jpg"), // Koon Seng Road shophouses
   },
   news: {
     title: "News Desk",
     subtitle: "Curated headlines, summarised so you can scan",
-    img: unsplash("1eWyU9uLRJk"), // Marina Bay Sands over the skyline
+    img: img("cbd-night.jpg"), // CBD towers at night
   },
   pipeline: {
     title: "Deal Pipeline",
     subtitle: "Team deals, next actions and expiry radar",
-    img: unsplash("i3k4BZcHa7c"), // Marina Bay Sands / CBD
+    img: img("marina-dusk.jpg"), // Marina Bay blue hour
   },
   assistant: {
     title: "Market Assistant",
     subtitle: "Ask anything — answers grounded in platform data",
-    img: unsplash("4HVCsDOg0qI"), // Gardens by the Bay supertrees at night
+    img: img("bay-panorama.jpg"), // Gardens by the Bay & Flyer panorama
   },
 };
 
