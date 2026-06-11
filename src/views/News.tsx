@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bookmark, BookmarkCheck, Zap } from "lucide-react";
@@ -36,12 +37,18 @@ export function News() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={cn(
-              "rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-colors",
-              filter === f ? "bg-foreground text-background" : "bg-muted text-muted-foreground hover:text-foreground"
-            )}
+            className="relative rounded-full px-3.5 py-1.5 text-[12px] font-bold bg-muted"
           >
-            {f}
+            {filter === f && (
+              <motion.span
+                layoutId="news-filter-pill"
+                className="absolute inset-0 rounded-full bg-foreground"
+                transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+              />
+            )}
+            <span className={cn("relative transition-colors", filter === f ? "text-background" : "text-muted-foreground hover:text-foreground")}>
+              {f}
+            </span>
           </button>
         ))}
         <span className="ml-auto text-[11.5px] text-muted-foreground font-medium">
@@ -51,7 +58,7 @@ export function News() {
 
       <div className="grid md:grid-cols-2 gap-4">
         {items.map((n) => (
-          <Card key={n.id} className="rounded-2xl shadow-sm border-border/70">
+          <Card key={n.id} className="rounded-2xl shadow-sm border-border/70 card-lift">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="rounded-full text-[10px] font-bold">{n.category}</Badge>

@@ -110,7 +110,7 @@ export function Assistant() {
   };
 
   return (
-    <Card className="rounded-2xl shadow-sm border-border/70 max-w-3xl mx-auto flex flex-col h-[calc(100dvh-220px)] lg:h-[calc(100dvh-170px)] min-h-[420px]">
+    <Card className="rounded-2xl shadow-sm border-border/70 max-w-3xl mx-auto flex flex-col h-[calc(100dvh-330px)] lg:h-[calc(100dvh-280px)] min-h-[380px]">
       <CardContent className="flex flex-col flex-1 min-h-0 pt-5">
         <div className="flex-1 overflow-y-auto space-y-4 pr-1">
           {messages.map((m, i) => (

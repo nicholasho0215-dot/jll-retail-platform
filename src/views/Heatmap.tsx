@@ -21,14 +21,20 @@ function bubbleIcon(c: RetailCluster, isSelected: boolean) {
   const color = heatColor(c.intensity);
   const ring = isSelected ? "#1f2937" : "#ffffff";
   const label = c.name.split(" / ")[0];
+  const pulse = c.intensity >= 0.85 || isSelected
+    ? `<span class="heat-ring" style="background:${color};"></span>`
+    : "";
   return L.divIcon({
     className: "",
     html: `
       <div style="display:flex;flex-direction:column;align-items:center;font-family:'Plus Jakarta Sans',system-ui,sans-serif;">
-        <div style="width:${d}px;height:${d}px;border-radius:50%;background:${color};border:2.5px solid ${ring};
-          box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;
-          color:#fff;font-weight:800;font-size:11px;letter-spacing:-0.2px;">
-          $${c.rentPsf.toFixed(0)}
+        <div style="position:relative;width:${d}px;height:${d}px;">
+          ${pulse}
+          <div style="position:absolute;inset:0;border-radius:50%;background:${color};border:2.5px solid ${ring};
+            box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;
+            color:#fff;font-weight:800;font-size:11px;letter-spacing:-0.2px;">
+            $${c.rentPsf.toFixed(0)}
+          </div>
         </div>
         <div style="margin-top:3px;font-size:11px;font-weight:700;color:#1f2937;white-space:nowrap;
           background:rgba(255,255,255,.88);padding:1px 7px;border-radius:99px;box-shadow:0 1px 3px rgba(0,0,0,.15);">

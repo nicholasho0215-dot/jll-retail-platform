@@ -42,3 +42,52 @@
     font-feature-settings: "tnum" on;
   }
 }
+
+/* Motion: hero Ken Burns drift, ticker marquee, heatmap radar pings, card lift */
+@keyframes kenburns {
+  from { transform: scale(1.05) translate(0, 0); }
+  to { transform: scale(1.16) translate(-1.5%, -2%); }
+}
+.kenburns {
+  animation: kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee {
+  animation: marquee 55s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes heat-ping {
+  from { transform: scale(1); opacity: 0.55; }
+  to { transform: scale(2.2); opacity: 0; }
+}
+.heat-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  animation: heat-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.card-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns, .marquee, .heat-ring {
+    animation: none;
+  }
+  .card-lift:hover {
+    transform: none;
+  }
+}
