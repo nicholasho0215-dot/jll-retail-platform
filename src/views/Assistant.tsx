@@ -2,133 +2,143 @@ import { useRef, useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Sparkles } from "lucide-react";
-import { clusters, kpis, storeMoves, news, deals, expiries, mallSpaces } from "@/data/marketData";
+import { Send, Sparkles, Settings2, X, KeyRound } from "lucide-react";
+import { answerLocally } from "@/lib/localAnswer";
+import { askClaude, describeError, getStoredKey, storeKey, clearKey, type ChatTurn } from "@/lib/claude";
+import { cn } from "@/lib/utils";
 
 interface Msg {
   role: "user" | "assistant";
   text: string;
 }
 
-// Rule-based assistant grounded in the platform dataset.
-// Production build swaps this for a Claude API call with the same data as context.
-function answer(q: string): string {
-  const s = q.toLowerCase();
-
-  const findCluster = () =>
-    clusters.find((c) => {
-      const tokens = c.name.toLowerCase().split(/[\s/]+/).filter((t) => t.length > 3);
-      return tokens.some((t) => s.includes(t)) || c.keyMalls.some((m) => s.includes(m.toLowerCase()));
-    });
-
-  if (/(unit|space|sqft|available|free up|freeing)/.test(s)) {
-    const mall = mallSpaces.find((m) => s.includes(m.mall.toLowerCase()));
-    if (mall) {
-      const lines = mall.units.map((u) => {
-        const when = u.status === "vacant" ? "ready now" : `from ${new Date(u.availableFrom).toLocaleDateString("en-SG", { month: "short", year: "numeric" })}${u.currentTenant ? ` (currently ${u.currentTenant})` : ""}`;
-        return `• ${u.unit} — ${u.sqft.toLocaleString()} sqft, S$${u.askPsf} psf, ${when}. Suits: ${u.suitedFor.join(", ")}`;
-      });
-      return `${mall.mall} (${mall.cluster}) has ${mall.units.length} ${mall.units.length > 1 ? "opportunities" : "opportunity"} on the radar:\n\n${lines.join("\n")}`;
-    }
-    const vacant = mallSpaces.flatMap((m) => m.units.filter((u) => u.status === "vacant").map(() => m.mall));
-    const counts = vacant.reduce<Record<string, number>>((a, m) => ((a[m] = (a[m] ?? 0) + 1), a), {});
-    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4);
-    const total = mallSpaces.reduce((s2, m) => s2 + m.units.length, 0);
-    return `${total} units across ${mallSpaces.length} malls are vacant or freeing up soon. Most availability right now: ${top.map(([m, n]) => `${m} (${n})`).join(", ")}. Ask me about a specific mall — e.g. "what's available at Suntec City?" — or open the Space Finder tab.`;
-  }
-
-  if (/(vacancy|occupied|occupancy)/.test(s)) {
-    const c = findCluster();
-    if (c) return `${c.name} is running at ${c.vacancy}% vacancy (${c.tier} tier). ${c.note}`;
-    return `Island-wide retail vacancy is ${kpis.islandVacancy.value}% (Q1 26), up ${kpis.islandVacancy.change}pp q-o-q — the first material rise after two years of tightening. Orchard climbed to 7.1% after a wave of closures, while suburban tightened to ~4.1%. Tightest: Tampines (4.0%) and Jurong East (4.4%); loosest: Chinatown/Tanjong Pagar at 8.0%.`;
-  }
-
-  if (/(rent|psf|price|cost)/.test(s)) {
-    const c = findCluster();
-    if (c) return `Prime floor rents in ${c.name} average S$${c.rentPsf} psf/month (Savills basket), up ${c.rentChangeYoY}% y-o-y. Key malls: ${c.keyMalls.join(", ")}. Hot categories there right now: ${c.hotCategories.join(", ")}.`;
-    return `Current prime floor rents (Q1 26, Savills basket) — Orchard: S$${kpis.primeOrchardRent.value} psf/mo, suburban: S$${kpis.suburbanRent.value} psf/mo, both flat q-o-q; central-region rents dipped ~0.6% in Q1. Full-year 2026 calls: Knight Frank +2–4%, CBRE +1–2%, on supply of only ~${kpis.newSupply.value}M sqft/yr through 2029.`;
-  }
-
-  if (/(open|closed|closing|closure|new store|movement)/.test(s)) {
-    const opens = storeMoves.filter((m) => m.type === "open");
-    const closes = storeMoves.filter((m) => m.type === "close");
-    const ntm = storeMoves.filter((m) => m.signal === "new-to-market").map((m) => m.brand);
-    return `Recent moves: ${opens.length} openings vs ${closes.length} closures. Notable new-to-market entries: ${ntm.join(", ")}. Biggest closures to watch: Isetan's NEX exit (multi-floor anchor floorplate freed) and Cathay Cineplexes' liquidation returning cinema boxes to the market. Full list in the Open/Close tab.`;
-  }
-
-  if (/(news|headline|happened|this week|summar)/.test(s)) {
-    const top = news.filter((n) => n.impact === "high").slice(0, 3);
-    return `Top stories this week:\n\n${top.map((n, i) => `${i + 1}. ${n.headline} — ${n.summary}`).join("\n\n")}`;
-  }
-
-  if (/(pipeline|deal|negotiat)/.test(s)) {
-    const closing = deals.filter((d) => d.stage === "Negotiating" || d.stage === "Legal");
-    return `${deals.length} active deals worth ~S$${(deals.reduce((a, d) => a + d.value, 0) / 1000).toFixed(1)}M est. annual rent. ${closing.length} are in closing stages: ${closing.map((d) => `${d.tenant} (${d.stage} — ${d.nextAction})`).join("; ")}.`;
-  }
-
-  if (/(expir|renewal|lease end)/.test(s)) {
-    const urgent = expiries.filter((e) => e.urgency === "high");
-    return `${expiries.length} major expiries on the radar. Most urgent: ${urgent.map((e) => `${e.tenant} at ${e.mall} (${e.sqft.toLocaleString()} sqft, ${new Date(e.expiry).toLocaleDateString("en-SG", { month: "long", year: "numeric" })})`).join(" and ")}. Both are large-format anchors — start renewal conversations now.`;
-  }
-
-  if (/(supply|pipeline mall|new mall|upcoming)/.test(s)) {
-    return `New supply averages just ~300k sqft/yr through 2029 — under half the decade norm. 2026 completions: CanningHill Square (87k sqft, Clarke Quay) and Parc Point (75k sqft, Tengah). The next big wave is 2028: MBS expansion retail and the Marina Square redevelopment. Constrained supply underpins the 1–4% rent-growth calls despite the Q1 vacancy uptick.`;
-  }
-
-  if (/(f&b|food|restaurant|cafe|coffee)/.test(s)) {
-    const fb = storeMoves.filter((m) => m.category === "F&B" && m.type === "open");
-    return `F&B remains the most active leasing category. Recent openings: ${fb.map((m) => `${m.brand} (${m.location})`).join(", ")}. Trends: Chick-fil-A's Bugis+ debut headlines the US-chicken wave, Lotteria extends the Korean fast-food push, and Chinese premium tea (Molly Tea) is the most aggressive taker of small CBD units.`;
-  }
-
-  if (/(tourist|visitor|arrival)/.test(s)) {
-    return `April arrivals were ${kpis.touristArrivals.value}M, easing ${Math.abs(kpis.touristArrivals.change)}% from March — a watch item for Orchard and Marina Bay retail. STB still forecasts 17–18M arrivals for 2026 (S$31–32.5B in receipts), so the full-year tourism tailwind remains intact.`;
-  }
-
-  if (/(compare|vs|versus|better)/.test(s)) {
-    return `Quick comparison — Orchard prime S$23.20 psf at 7.1% vacancy (rising) vs suburban prime S$14.70 psf at ~4.1% vacancy (tightening). Right now suburban is the stronger story: near-full occupancy, sticky catchment demand and F&B waiting lists. For expanding F&B clients I'd target Tampines or Jurong East first; Orchard currently favours tenants negotiating flagship deals.`;
-  }
-
-  return `I can help with anything on this platform's data. Try asking:\n\n• "What's the vacancy rate in Orchard?"\n• "Compare prime vs suburban rents"\n• "What shops opened or closed recently?"\n• "Summarise this week's top news"\n• "What's in our deal pipeline?"\n• "Any major lease expiries coming up?"`;
-}
-
 const suggestions = [
   "What's available at Suntec City?",
-  "What's the vacancy in Orchard?",
-  "What shops opened recently?",
-  "Any lease expiries coming up?",
+  "Rents and vacancy in Tampines",
+  "Compare Orchard vs Jurong East",
+  "What happened to Isetan?",
 ];
 
 export function Assistant() {
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
-      text: "Morning! I'm your market assistant — I answer from live platform data so you don't have to dig. Ask me about rents, vacancy, store movements, news or your pipeline.",
+      text: "Morning! I'm your market assistant — ask me about rents, vacancy, available units, store movements, news or the pipeline. Connect a Claude API key in settings (⚙) for full AI answers.",
     },
   ]);
   const [input, setInput] = useState("");
-  const [typing, setTyping] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [apiKey, setApiKey] = useState<string | null>(() => getStoredKey());
+  const [showSettings, setShowSettings] = useState(false);
+  const [keyDraft, setKeyDraft] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, typing]);
+  }, [messages, busy]);
 
-  const send = (text?: string) => {
+  const send = async (text?: string) => {
     const q = (text ?? input).trim();
-    if (!q || typing) return;
-    setMessages((m) => [...m, { role: "user", text: q }]);
+    if (!q || busy) return;
     setInput("");
-    setTyping(true);
-    setTimeout(() => {
-      setMessages((m) => [...m, { role: "assistant", text: answer(q) }]);
-      setTyping(false);
-    }, 650);
+    setBusy(true);
+
+    const history: ChatTurn[] = [...messages, { role: "user" as const, text: q }].map((m) => ({ role: m.role, text: m.text }));
+    setMessages((m) => [...m, { role: "user", text: q }]);
+
+    if (apiKey) {
+      // Real AI path — stream the reply in place
+      setMessages((m) => [...m, { role: "assistant", text: "" }]);
+      try {
+        let acc = "";
+        const full = await askClaude(apiKey, history, (delta) => {
+          acc += delta;
+          const snapshot = acc;
+          setMessages((m) => [...m.slice(0, -1), { role: "assistant", text: snapshot }]);
+        });
+        setMessages((m) => [...m.slice(0, -1), { role: "assistant", text: full || acc }]);
+      } catch (err) {
+        const note = describeError(err);
+        const fallback = answerLocally(q);
+        setMessages((m) => [...m.slice(0, -1), { role: "assistant", text: `⚠️ ${note}\n\n${fallback}` }]);
+      }
+    } else {
+      // Built-in engine
+      await new Promise((r) => setTimeout(r, 450));
+      setMessages((m) => [...m, { role: "assistant", text: answerLocally(q) }]);
+    }
+    setBusy(false);
+  };
+
+  const saveKey = () => {
+    const k = keyDraft.trim();
+    if (!k) return;
+    storeKey(k);
+    setApiKey(k);
+    setKeyDraft("");
+    setShowSettings(false);
+    setMessages((m) => [...m, { role: "assistant", text: "Claude connected ✓ — I'll now answer with full AI, grounded in the platform data. Your key stays in this browser only." }]);
+  };
+
+  const removeKey = () => {
+    clearKey();
+    setApiKey(null);
+    setShowSettings(false);
+    setMessages((m) => [...m, { role: "assistant", text: "Claude disconnected — back to the built-in engine." }]);
   };
 
   return (
     <Card className="rounded-2xl shadow-sm border-border/70 max-w-3xl mx-auto flex flex-col h-[calc(100dvh-330px)] lg:h-[calc(100dvh-280px)] min-h-[380px]">
-      <CardContent className="flex flex-col flex-1 min-h-0 pt-5">
-        <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+      <CardContent className="flex flex-col flex-1 min-h-0 pt-4">
+        {/* Mode bar */}
+        <div className="flex items-center gap-2 pb-3 border-b border-border/60">
+          <span className={cn("h-2 w-2 rounded-full", apiKey ? "bg-emerald-500" : "bg-slate-300")} />
+          <span className="text-[11.5px] font-bold">{apiKey ? "Claude AI connected" : "Built-in engine"}</span>
+          <span className="text-[11px] text-muted-foreground font-medium hidden sm:inline">
+            {apiKey ? "answers generated by Claude, grounded in platform data" : "keyword engine — connect Claude for free-form answers"}
+          </span>
+          <button
+            onClick={() => setShowSettings((s) => !s)}
+            aria-label="Assistant settings"
+            className="ml-auto rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            {showSettings ? <X className="h-4 w-4" /> : <Settings2 className="h-4 w-4" />}
+          </button>
+        </div>
+
+        {showSettings && (
+          <div className="rounded-xl border border-border/70 bg-muted/30 p-3.5 mt-3 space-y-2.5">
+            <div className="flex items-center gap-2 text-[12.5px] font-bold">
+              <KeyRound className="h-3.5 w-3.5 text-primary" />
+              Anthropic API key
+            </div>
+            <p className="text-[11.5px] leading-relaxed text-muted-foreground">
+              Paste your own key (console.anthropic.com → API keys) to upgrade the assistant to real Claude AI.
+              It's stored only in this browser's localStorage and sent only to Anthropic — never to this site's
+              repo or any other server. Usage is billed to your Anthropic account (typically &lt; US$0.05 per question).
+            </p>
+            <div className="flex gap-2">
+              <Input
+                type="password"
+                value={keyDraft}
+                onChange={(e) => setKeyDraft(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && saveKey()}
+                placeholder="sk-ant-…"
+                className="rounded-lg h-9 text-[12.5px] font-mono"
+              />
+              <Button onClick={saveKey} disabled={!keyDraft.trim()} className="rounded-lg h-9 text-[12px] font-bold">
+                Connect
+              </Button>
+            </div>
+            {apiKey && (
+              <button onClick={removeKey} className="text-[11.5px] font-semibold text-rose-600 hover:underline">
+                Disconnect & forget key
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="flex-1 overflow-y-auto space-y-4 pr-1 pt-4">
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               {m.role === "assistant" && (
@@ -143,11 +153,11 @@ export function Assistant() {
                     : "bg-muted/70 rounded-bl-md"
                 }`}
               >
-                {m.text}
+                {m.text || <span className="text-muted-foreground">thinking…</span>}
               </div>
             </div>
           ))}
-          {typing && (
+          {busy && !apiKey && (
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center shrink-0">
                 <Sparkles className="h-4 w-4 text-accent-foreground" />
@@ -177,10 +187,10 @@ export function Assistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
-            placeholder="Ask about rents, vacancy, store moves, news…"
+            placeholder={apiKey ? "Ask Claude anything about the market…" : "Ask about rents, vacancy, units, store moves…"}
             className="rounded-xl h-11 text-[13.5px]"
           />
-          <Button onClick={() => send()} size="icon" className="rounded-xl h-11 w-11 shrink-0">
+          <Button onClick={() => send()} disabled={busy} size="icon" className="rounded-xl h-11 w-11 shrink-0">
             <Send className="h-4 w-4" />
           </Button>
         </div>
