@@ -23,10 +23,10 @@ function useCountUp(target: number) {
   return val.toFixed(decimals);
 }
 
-function KpiCard({ k, index }: { k: { value: number; change: number; label: string; unit: string; direction: string }; index: number }) {
+function KpiCard({ k, index }: { k: { value: number; change: number; label: string; unit: string; direction: string; changeLabel: string }; index: number }) {
   const up = k.change > 0;
   const Icon = k.change === 0 ? Minus : up ? TrendingUp : TrendingDown;
-  const good = k.direction === "neutral" ? null : k.direction === "up-good" ? up : !up;
+  const good = k.direction === "neutral" || k.change === 0 ? null : k.direction === "up-good" ? up : !up;
   const display = useCountUp(k.value);
   return (
     <motion.div
@@ -45,7 +45,7 @@ function KpiCard({ k, index }: { k: { value: number; change: number; label: stri
           good === null ? "text-muted-foreground" : good ? "text-emerald-600" : "text-rose-600"
         }`}>
           <Icon className="h-3.5 w-3.5" />
-          {k.change === 0 ? "stable" : `${up ? "+" : ""}${k.change}% y-o-y`}
+          {k.change === 0 ? "flat q-o-q" : `${up ? "+" : ""}${k.change}${k.changeLabel}`}
         </div>
       </CardContent>
     </Card>
@@ -64,17 +64,17 @@ export function Dashboard() {
         <Card className="rounded-2xl shadow-sm border-border/70">
           <CardHeader className="pb-2">
             <CardTitle className="text-[15px] font-bold">Prime Floor Rents by Submarket</CardTitle>
-            <p className="text-[12px] text-muted-foreground">S$ psf/month · URA REALIS basis</p>
+            <p className="text-[12px] text-muted-foreground">S$ psf/month · Savills & Knight Frank prime baskets</p>
           </CardHeader>
           <CardContent className="h-[220px] sm:h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={rentalTrend} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee5d8" />
                 <XAxis dataKey="quarter" tick={{ fontSize: 11, fontFamily: "inherit" }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[15, 40]} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[12, 32]} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #eee5d8", fontSize: 12 }} />
+                <Line type="monotone" dataKey="islandPrime" name="Island-wide prime" stroke="#e8862d" strokeWidth={2.5} dot={false} />
                 <Line type="monotone" dataKey="orchard" name="Orchard" stroke="#d6202f" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="cityFringe" name="City Fringe" stroke="#e8862d" strokeWidth={2.5} dot={false} />
                 <Line type="monotone" dataKey="suburban" name="Suburban" stroke="#2f9e6e" strokeWidth={2.5} dot={false} />
               </LineChart>
             </ResponsiveContainer>
@@ -84,7 +84,7 @@ export function Dashboard() {
         <Card className="rounded-2xl shadow-sm border-border/70">
           <CardHeader className="pb-2">
             <CardTitle className="text-[15px] font-bold">Island-wide Vacancy Rate</CardTitle>
-            <p className="text-[12px] text-muted-foreground">% of retail NLA · tightening 8 quarters straight</p>
+            <p className="text-[12px] text-muted-foreground">% of retail NLA · ticked up to 6.8% in Q1 26 after 2 years of tightening</p>
           </CardHeader>
           <CardContent className="h-[220px] sm:h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -97,7 +97,7 @@ export function Dashboard() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee5d8" />
                 <XAxis dataKey="quarter" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[5.5, 8]} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[5.8, 7.8]} />
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #eee5d8", fontSize: 12 }} />
                 <Area type="monotone" dataKey="vacancy" name="Vacancy %" stroke="#d6202f" strokeWidth={2.5} fill="url(#vac)" />
               </AreaChart>
@@ -109,7 +109,7 @@ export function Dashboard() {
       <Card className="rounded-2xl shadow-sm border-border/70">
         <CardHeader className="pb-3">
           <CardTitle className="text-[15px] font-bold">New Supply Pipeline</CardTitle>
-          <p className="text-[12px] text-muted-foreground">Upcoming retail NLA — limited supply supports rental growth through 2027</p>
+          <p className="text-[12px] text-muted-foreground">2026–29 supply averages ~300k sqft/yr — under half the decade norm; next big wave 2028</p>
         </CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -118,7 +118,9 @@ export function Dashboard() {
                 <div className="text-[13px] font-bold leading-snug">{p.project}</div>
                 <div className="text-[11.5px] text-muted-foreground mt-0.5">{p.zone}</div>
                 <div className="mt-2 flex items-center justify-between">
-                  <span className="text-[15px] font-extrabold tabular-nums">{p.nla}k <span className="text-[11px] font-semibold text-muted-foreground">sqft</span></span>
+                  <span className="text-[15px] font-extrabold tabular-nums">
+                    {p.nla !== null ? <>{p.nla}k <span className="text-[11px] font-semibold text-muted-foreground">sqft</span></> : <span className="text-[12px] font-bold text-muted-foreground">NLA TBC</span>}
+                  </span>
                   <Badge variant="secondary" className="rounded-full text-[10.5px] font-bold">{p.opening}</Badge>
                 </div>
               </div>

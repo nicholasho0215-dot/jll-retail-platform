@@ -5,10 +5,11 @@ type Item = { text: string; tone: "up" | "down" | "flat" };
 
 function buildItems(): Item[] {
   const items: Item[] = [
-    { text: `Orchard prime S$${kpis.primeOrchardRent.value} psf ${kpis.primeOrchardRent.change > 0 ? "+" : ""}${kpis.primeOrchardRent.change}%`, tone: "up" },
-    { text: `Island vacancy ${kpis.islandVacancy.value}% (${kpis.islandVacancy.change}pp y-o-y)`, tone: "up" },
-    { text: `Suburban avg S$${kpis.suburbanRent.value} psf +${kpis.suburbanRent.change}%`, tone: "up" },
-    { text: `Visitors ${kpis.touristArrivals.value}M/mo +${kpis.touristArrivals.change}%`, tone: "up" },
+    { text: `Orchard prime S$${kpis.primeOrchardRent.value} psf · flat q-o-q`, tone: "flat" },
+    { text: `Island vacancy ${kpis.islandVacancy.value}% (+${kpis.islandVacancy.change}pp q-o-q)`, tone: "down" },
+    { text: `Suburban prime S$${kpis.suburbanRent.value} psf · vacancy ~4.1%`, tone: "up" },
+    { text: `Retail sales +${kpis.retailSalesGrowth.value}% y-o-y (Apr)`, tone: "up" },
+    { text: `Visitors ${kpis.touristArrivals.value}M in Apr (${kpis.touristArrivals.change}% m-o-m)`, tone: "down" },
   ];
   for (const m of storeMoves.slice(0, 8)) {
     items.push({

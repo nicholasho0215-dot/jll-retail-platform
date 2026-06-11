@@ -17,7 +17,7 @@ function heatColor(intensity: number) {
 }
 
 function bubbleIcon(c: RetailCluster, isSelected: boolean) {
-  const d = Math.round(30 + (c.rentPsf - 17) * 1.1); // diameter scales with rent
+  const d = Math.round(30 + (c.rentPsf - 13) * 1.8); // diameter scales with rent (S$13.8–23.2 psf range)
   const color = heatColor(c.intensity);
   const ring = isSelected ? "#1f2937" : "#ffffff";
   const label = c.name.split(" / ")[0];

@@ -40,20 +40,20 @@ function answer(q: string): string {
   if (/(vacancy|occupied|occupancy)/.test(s)) {
     const c = findCluster();
     if (c) return `${c.name} is running at ${c.vacancy}% vacancy (${c.tier} tier). ${c.note}`;
-    return `Island-wide retail vacancy is ${kpis.islandVacancy.value}%, down ${Math.abs(kpis.islandVacancy.change)}pp y-o-y — the eighth straight quarter of tightening. Tightest submarkets: Tampines (4.3%), Serangoon (4.6%) and Jurong East (4.8%). Loosest: Chinatown/Tanjong Pagar at 8.2%.`;
+    return `Island-wide retail vacancy is ${kpis.islandVacancy.value}% (Q1 26), up ${kpis.islandVacancy.change}pp q-o-q — the first material rise after two years of tightening. Orchard climbed to 7.1% after a wave of closures, while suburban tightened to ~4.1%. Tightest: Tampines (4.0%) and Jurong East (4.4%); loosest: Chinatown/Tanjong Pagar at 8.0%.`;
   }
 
   if (/(rent|psf|price|cost)/.test(s)) {
     const c = findCluster();
-    if (c) return `Prime floor rents in ${c.name} average S$${c.rentPsf} psf/month, up ${c.rentChangeYoY}% y-o-y. Key malls: ${c.keyMalls.join(", ")}. Hot categories there right now: ${c.hotCategories.join(", ")}.`;
-    return `Current prime floor rents — Orchard: S$${kpis.primeOrchardRent.value} psf/mo (+3.2% y-o-y), suburban average: S$${kpis.suburbanRent.value} psf/mo (+2.5%). Rents have grown four straight quarters with limited 2026 supply (${kpis.newSupply.value}M sqft) supporting further growth.`;
+    if (c) return `Prime floor rents in ${c.name} average S$${c.rentPsf} psf/month (Savills basket), up ${c.rentChangeYoY}% y-o-y. Key malls: ${c.keyMalls.join(", ")}. Hot categories there right now: ${c.hotCategories.join(", ")}.`;
+    return `Current prime floor rents (Q1 26, Savills basket) — Orchard: S$${kpis.primeOrchardRent.value} psf/mo, suburban: S$${kpis.suburbanRent.value} psf/mo, both flat q-o-q; central-region rents dipped ~0.6% in Q1. Full-year 2026 calls: Knight Frank +2–4%, CBRE +1–2%, on supply of only ~${kpis.newSupply.value}M sqft/yr through 2029.`;
   }
 
   if (/(open|closed|closing|closure|new store|movement)/.test(s)) {
     const opens = storeMoves.filter((m) => m.type === "open");
     const closes = storeMoves.filter((m) => m.type === "close");
     const ntm = storeMoves.filter((m) => m.signal === "new-to-market").map((m) => m.brand);
-    return `Last 30 days: ${opens.length} openings vs ${closes.length} closures — net positive. Notable new-to-market entries: ${ntm.join(", ")}. Biggest closure to watch: Esprit's final SG exit frees a 3,200 sqft prime unit at Suntec City. Want the full list? Check the Open/Close tab.`;
+    return `Recent moves: ${opens.length} openings vs ${closes.length} closures. Notable new-to-market entries: ${ntm.join(", ")}. Biggest closures to watch: Isetan's NEX exit (multi-floor anchor floorplate freed) and Cathay Cineplexes' liquidation returning cinema boxes to the market. Full list in the Open/Close tab.`;
   }
 
   if (/(news|headline|happened|this week|summar)/.test(s)) {
@@ -72,20 +72,20 @@ function answer(q: string): string {
   }
 
   if (/(supply|pipeline mall|new mall|upcoming)/.test(s)) {
-    return `2026-27 supply is limited at ${kpis.newSupply.value}M sqft NLA. Largest additions: Jurong Lake District retail (280k sqft, Q1 2027) and Pasir Ris Mall (195k sqft, Q2 2026). Constrained supply is the key driver behind landlord pricing power right now.`;
+    return `New supply averages just ~300k sqft/yr through 2029 — under half the decade norm. 2026 completions: CanningHill Square (87k sqft, Clarke Quay) and Parc Point (75k sqft, Tengah). The next big wave is 2028: MBS expansion retail and the Marina Square redevelopment. Constrained supply underpins the 1–4% rent-growth calls despite the Q1 vacancy uptick.`;
   }
 
   if (/(f&b|food|restaurant|cafe|coffee)/.test(s)) {
     const fb = storeMoves.filter((m) => m.category === "F&B" && m.type === "open");
-    return `F&B remains the most active leasing category. Recent openings: ${fb.map((m) => `${m.brand} (${m.location})`).join(", ")}. Trends: Korean concepts hunting 800-1,500 sqft CBD units, specialty coffee intensifying after Blue Bottle's entry, and Luckin Coffee on the fastest rollout in SG history (42 stores in 30 months).`;
+    return `F&B remains the most active leasing category. Recent openings: ${fb.map((m) => `${m.brand} (${m.location})`).join(", ")}. Trends: Chick-fil-A's Bugis+ debut headlines the US-chicken wave, Lotteria extends the Korean fast-food push, and Chinese premium tea (Molly Tea) is the most aggressive taker of small CBD units.`;
   }
 
   if (/(tourist|visitor|arrival)/.test(s)) {
-    return `Monthly visitor arrivals are at ${kpis.touristArrivals.value}M, up ${kpis.touristArrivals.change}% y-o-y — a direct tailwind for Orchard and Marina Bay luxury retail. The new 3-minute GST refund process should further lift luxury conversion rates.`;
+    return `April arrivals were ${kpis.touristArrivals.value}M, easing ${Math.abs(kpis.touristArrivals.change)}% from March — a watch item for Orchard and Marina Bay retail. STB still forecasts 17–18M arrivals for 2026 (S$31–32.5B in receipts), so the full-year tourism tailwind remains intact.`;
   }
 
   if (/(compare|vs|versus|better)/.test(s)) {
-    return `Quick comparison — Prime (Orchard S$36.40, vacancy 6.1%) vs Suburban (avg S$18.70, vacancy ~4.8%). Suburban malls offer tighter occupancy and stickier catchment demand; prime offers brand flagship value and tourist spend. For expanding F&B clients I'd target Tampines or Serangoon first — tightest markets with proven footfall.`;
+    return `Quick comparison — Orchard prime S$23.20 psf at 7.1% vacancy (rising) vs suburban prime S$14.70 psf at ~4.1% vacancy (tightening). Right now suburban is the stronger story: near-full occupancy, sticky catchment demand and F&B waiting lists. For expanding F&B clients I'd target Tampines or Jurong East first; Orchard currently favours tenants negotiating flagship deals.`;
   }
 
   return `I can help with anything on this platform's data. Try asking:\n\n• "What's the vacancy rate in Orchard?"\n• "Compare prime vs suburban rents"\n• "What shops opened or closed recently?"\n• "Summarise this week's top news"\n• "What's in our deal pipeline?"\n• "Any major lease expiries coming up?"`;
