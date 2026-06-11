@@ -58,7 +58,7 @@ export function News() {
 
       <div className="grid md:grid-cols-2 gap-4">
         {items.map((n) => (
-          <Card key={n.id} className="rounded-2xl shadow-sm border-border/70 card-lift">
+          <Card key={n.id} className="rounded-xl card-lift">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="rounded-full text-[10px] font-bold">{n.category}</Badge>

@@ -12,7 +12,7 @@ const typeFilters = ["All", "Openings", "Closures"] as const;
 
 const signalStyles: Record<string, string> = {
   "expansion": "bg-emerald-100 text-emerald-700",
-  "new-to-market": "bg-violet-100 text-violet-700",
+  "new-to-market": "bg-zinc-900 text-white",
   "consolidation": "bg-amber-100 text-amber-700",
   "exit": "bg-rose-100 text-rose-700",
   "relocation": "bg-sky-100 text-sky-700",
@@ -39,35 +39,35 @@ export function Tracker() {
   return (
     <div className="space-y-5">
       <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
-        <Card className="rounded-2xl shadow-sm border-border/70 card-lift">
+        <Card className="rounded-xl card-lift">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
             <div className="h-11 w-11 rounded-xl bg-emerald-100 flex items-center justify-center">
               <ArrowUpRight className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <div className="text-[24px] font-extrabold tabular-nums leading-none">{opens}</div>
+              <div className="font-display text-[26px] font-bold tabular-nums leading-none">{opens}</div>
               <div className="text-[12px] font-semibold text-muted-foreground mt-1">openings · last 30 days</div>
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl shadow-sm border-border/70 card-lift">
+        <Card className="rounded-xl card-lift">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
             <div className="h-11 w-11 rounded-xl bg-rose-100 flex items-center justify-center">
               <ArrowDownRight className="h-5 w-5 text-rose-600" />
             </div>
             <div>
-              <div className="text-[24px] font-extrabold tabular-nums leading-none">{closes}</div>
+              <div className="font-display text-[26px] font-bold tabular-nums leading-none">{closes}</div>
               <div className="text-[12px] font-semibold text-muted-foreground mt-1">closures · last 30 days</div>
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl shadow-sm border-border/70 card-lift">
+        <Card className="rounded-xl card-lift">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-violet-100 flex items-center justify-center">
-              <Sparkle className="h-5 w-5 text-violet-600" />
+            <div className="h-11 w-11 rounded-xl bg-zinc-900/10 flex items-center justify-center">
+              <Sparkle className="h-5 w-5 text-zinc-900" />
             </div>
             <div>
-              <div className="text-[24px] font-extrabold tabular-nums leading-none">{newToMarket}</div>
+              <div className="font-display text-[26px] font-bold tabular-nums leading-none">{newToMarket}</div>
               <div className="text-[12px] font-semibold text-muted-foreground mt-1">new-to-market brands</div>
             </div>
           </CardContent>
@@ -75,10 +75,10 @@ export function Tracker() {
       </div>
 
       <div className="grid lg:grid-cols-[1fr_360px] gap-5 items-start">
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <CardTitle className="text-[15px] font-bold">Store Movements</CardTitle>
+              <CardTitle className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Store Movements</CardTitle>
               <div className="flex gap-1.5">
                 {typeFilters.map((t) => (
                   <button
@@ -158,9 +158,9 @@ export function Tracker() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-xl">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[15px] font-bold">Weekly Velocity</CardTitle>
+            <CardTitle className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Weekly Velocity</CardTitle>
             <p className="text-[12px] text-muted-foreground">Openings vs closures — net positive 6 weeks running</p>
           </CardHeader>
           <CardContent className="h-[240px]">
