@@ -277,3 +277,98 @@ export const expiries = [
   { tenant: "H&M", mall: "Jem L1", expiry: "2027-02-28", sqft: 15000, urgency: "medium" },
   { tenant: "Kopitiam", mall: "NEX B2", expiry: "2027-04-30", sqft: 9800, urgency: "low" },
 ];
+
+// ---- Mall space availability (vacant / expiring / confirmed-exit units) ----
+export interface MallUnit {
+  unit: string;
+  level: string;
+  sqft: number;
+  status: "vacant" | "expiring" | "notice";
+  availableFrom: string;
+  currentTenant?: string;
+  askPsf: number;
+  suitedFor: string[];
+}
+
+export interface MallSpaces {
+  mall: string;
+  cluster: string;
+  tier: "Prime" | "City Fringe" | "Suburban";
+  units: MallUnit[];
+}
+
+export const mallSpaces: MallSpaces[] = [
+  {
+    mall: "ION Orchard", cluster: "Orchard Road", tier: "Prime",
+    units: [
+      { unit: "#B3-12", level: "B3", sqft: 850, status: "vacant", availableFrom: "2026-06-01", askPsf: 38.5, suitedFor: ["F&B", "Beauty"] },
+      { unit: "#04-08", level: "L4", sqft: 1650, status: "expiring", availableFrom: "2026-10-01", currentTenant: "G-Star RAW", askPsf: 34.0, suitedFor: ["Fashion", "Lifestyle"] },
+      { unit: "#B4-22", level: "B4", sqft: 480, status: "vacant", availableFrom: "2026-06-15", askPsf: 41.0, suitedFor: ["F&B kiosk", "Specialty coffee"] },
+    ],
+  },
+  {
+    mall: "Ngee Ann City", cluster: "Orchard Road", tier: "Prime",
+    units: [
+      { unit: "#05-19", level: "L5", sqft: 2100, status: "expiring", availableFrom: "2026-12-01", currentTenant: "Best Denki (partial)", askPsf: 28.5, suitedFor: ["Lifestyle", "Electronics"] },
+      { unit: "#B2-05", level: "B2", sqft: 720, status: "vacant", availableFrom: "2026-07-01", askPsf: 36.0, suitedFor: ["F&B", "Bakery"] },
+    ],
+  },
+  {
+    mall: "Paragon", cluster: "Orchard Road", tier: "Prime",
+    units: [
+      { unit: "#03-41", level: "L3", sqft: 1280, status: "notice", availableFrom: "2026-08-15", currentTenant: "Marc by MJ (exit)", askPsf: 33.0, suitedFor: ["Luxury", "Fashion"] },
+    ],
+  },
+  {
+    mall: "Suntec City", cluster: "Marina / City Hall", tier: "Prime",
+    units: [
+      { unit: "#01-44", level: "L1", sqft: 3200, status: "notice", availableFrom: "2026-07-01", currentTenant: "Esprit (final SG exit)", askPsf: 26.0, suitedFor: ["Fashion anchor", "Sports"] },
+      { unit: "#02-330", level: "L2", sqft: 1450, status: "vacant", availableFrom: "2026-06-01", askPsf: 24.5, suitedFor: ["F&B", "Services"] },
+      { unit: "#03-08", level: "L3", sqft: 980, status: "expiring", availableFrom: "2027-01-01", currentTenant: "Typo", askPsf: 23.0, suitedFor: ["Lifestyle", "Gifts"] },
+    ],
+  },
+  {
+    mall: "Raffles City", cluster: "Marina / City Hall", tier: "Prime",
+    units: [
+      { unit: "#B1-16", level: "B1", sqft: 640, status: "vacant", availableFrom: "2026-06-20", askPsf: 30.0, suitedFor: ["F&B", "Grab & go"] },
+      { unit: "#02-25", level: "L2", sqft: 1900, status: "expiring", availableFrom: "2026-11-01", currentTenant: "Esfolio", askPsf: 27.5, suitedFor: ["Beauty", "Wellness"] },
+    ],
+  },
+  {
+    mall: "VivoCity", cluster: "HarbourFront", tier: "City Fringe",
+    units: [
+      { unit: "#02-88", level: "L2", sqft: 2400, status: "expiring", availableFrom: "2026-09-01", currentTenant: "Timezone (downsizing)", askPsf: 21.0, suitedFor: ["Entertainment", "Family"] },
+      { unit: "#01-160", level: "L1", sqft: 1100, status: "vacant", availableFrom: "2026-06-01", askPsf: 25.5, suitedFor: ["F&B", "Waterfront dining"] },
+      { unit: "#B2-30", level: "B2", sqft: 560, status: "vacant", availableFrom: "2026-07-01", askPsf: 23.0, suitedFor: ["F&B kiosk", "Beauty"] },
+    ],
+  },
+  {
+    mall: "Bugis Junction", cluster: "Bugis / Bras Basah", tier: "City Fringe",
+    units: [
+      { unit: "#03-14", level: "L3", sqft: 1750, status: "expiring", availableFrom: "2026-08-01", currentTenant: "Uniqlo (relocating in-mall)", askPsf: 19.5, suitedFor: ["Fashion", "Lifestyle"] },
+      { unit: "#01-78", level: "L1", sqft: 890, status: "vacant", availableFrom: "2026-06-10", askPsf: 22.0, suitedFor: ["F&B", "Street-front"] },
+    ],
+  },
+  {
+    mall: "Tampines Mall", cluster: "Tampines", tier: "Suburban",
+    units: [
+      { unit: "#04-30", level: "L4", sqft: 1500, status: "expiring", availableFrom: "2026-10-01", currentTenant: "Popular Bookstore (partial)", askPsf: 16.5, suitedFor: ["Education", "Lifestyle"] },
+      { unit: "#B1-09", level: "B1", sqft: 420, status: "vacant", availableFrom: "2026-06-01", askPsf: 19.0, suitedFor: ["F&B kiosk", "Bubble tea"] },
+    ],
+  },
+  {
+    mall: "NEX", cluster: "Serangoon", tier: "Suburban",
+    units: [
+      { unit: "#02-21", level: "L2", sqft: 1320, status: "notice", availableFrom: "2026-08-01", currentTenant: "Cotton On (consolidating)", askPsf: 17.5, suitedFor: ["Fashion", "Kids"] },
+      { unit: "#03-55", level: "L3", sqft: 760, status: "vacant", availableFrom: "2026-06-01", askPsf: 18.0, suitedFor: ["F&B", "Services"] },
+    ],
+  },
+  {
+    mall: "JEM", cluster: "Jurong East", tier: "Suburban",
+    units: [
+      { unit: "#01-12", level: "L1", sqft: 2050, status: "expiring", availableFrom: "2027-02-01", currentTenant: "Courts (format review)", askPsf: 18.5, suitedFor: ["Lifestyle anchor", "Sports"] },
+      { unit: "#04-19", level: "L4", sqft: 680, status: "vacant", availableFrom: "2026-06-01", askPsf: 16.0, suitedFor: ["F&B", "Enrichment"] },
+      { unit: "#05-02", level: "L5", sqft: 1150, status: "expiring", availableFrom: "2026-09-01", currentTenant: "Fitness First (renegotiating)", askPsf: 14.5, suitedFor: ["Wellness", "Fitness"] },
+    ],
+  },
+];

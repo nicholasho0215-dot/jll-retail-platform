@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Sparkles } from "lucide-react";
-import { clusters, kpis, storeMoves, news, deals, expiries } from "@/data/marketData";
+import { clusters, kpis, storeMoves, news, deals, expiries, mallSpaces } from "@/data/marketData";
 
 interface Msg {
   role: "user" | "assistant";
@@ -20,6 +20,22 @@ function answer(q: string): string {
       const tokens = c.name.toLowerCase().split(/[\s/]+/).filter((t) => t.length > 3);
       return tokens.some((t) => s.includes(t)) || c.keyMalls.some((m) => s.includes(m.toLowerCase()));
     });
+
+  if (/(unit|space|sqft|available|free up|freeing)/.test(s)) {
+    const mall = mallSpaces.find((m) => s.includes(m.mall.toLowerCase()));
+    if (mall) {
+      const lines = mall.units.map((u) => {
+        const when = u.status === "vacant" ? "ready now" : `from ${new Date(u.availableFrom).toLocaleDateString("en-SG", { month: "short", year: "numeric" })}${u.currentTenant ? ` (currently ${u.currentTenant})` : ""}`;
+        return `• ${u.unit} — ${u.sqft.toLocaleString()} sqft, S$${u.askPsf} psf, ${when}. Suits: ${u.suitedFor.join(", ")}`;
+      });
+      return `${mall.mall} (${mall.cluster}) has ${mall.units.length} ${mall.units.length > 1 ? "opportunities" : "opportunity"} on the radar:\n\n${lines.join("\n")}`;
+    }
+    const vacant = mallSpaces.flatMap((m) => m.units.filter((u) => u.status === "vacant").map(() => m.mall));
+    const counts = vacant.reduce<Record<string, number>>((a, m) => ((a[m] = (a[m] ?? 0) + 1), a), {});
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+    const total = mallSpaces.reduce((s2, m) => s2 + m.units.length, 0);
+    return `${total} units across ${mallSpaces.length} malls are vacant or freeing up soon. Most availability right now: ${top.map(([m, n]) => `${m} (${n})`).join(", ")}. Ask me about a specific mall — e.g. "what's available at Suntec City?" — or open the Space Finder tab.`;
+  }
 
   if (/(vacancy|occupied|occupancy)/.test(s)) {
     const c = findCluster();
@@ -76,9 +92,9 @@ function answer(q: string): string {
 }
 
 const suggestions = [
+  "What's available at Suntec City?",
   "What's the vacancy in Orchard?",
   "What shops opened recently?",
-  "Summarise this week's news",
   "Any lease expiries coming up?",
 ];
 

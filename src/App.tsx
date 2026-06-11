@@ -6,6 +6,7 @@ import { PageBanner } from "@/components/PageBanner";
 import { Ticker } from "@/components/Ticker";
 import { Dashboard } from "@/views/Dashboard";
 import { Heatmap } from "@/views/Heatmap";
+import { Spaces } from "@/views/Spaces";
 import { Tracker } from "@/views/Tracker";
 import { News } from "@/views/News";
 import { Pipeline } from "@/views/Pipeline";
@@ -14,6 +15,7 @@ import { Assistant } from "@/views/Assistant";
 const views: Record<ViewId, ComponentType> = {
   dashboard: Dashboard,
   heatmap: Heatmap,
+  spaces: Spaces,
   tracker: Tracker,
   news: News,
   pipeline: Pipeline,

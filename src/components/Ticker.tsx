@@ -1,4 +1,4 @@
-import { kpis, storeMoves, clusters } from "@/data/marketData";
+import { kpis, storeMoves, clusters, mallSpaces } from "@/data/marketData";
 import { cn } from "@/lib/utils";
 
 type Item = { text: string; tone: "up" | "down" | "flat" };
@@ -18,6 +18,14 @@ function buildItems(): Item[] {
   }
   for (const c of [...clusters].sort((a, b) => b.rentPsf - a.rentPsf).slice(0, 4)) {
     items.push({ text: `${c.name.split(" / ")[0]} S$${c.rentPsf} psf · ${c.vacancy}% vacant`, tone: "flat" });
+  }
+  const topAvail = [...mallSpaces]
+    .map((m) => ({ mall: m.mall, n: m.units.filter((u) => u.status === "vacant").length }))
+    .filter((m) => m.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 3);
+  for (const m of topAvail) {
+    items.push({ text: `${m.mall}: ${m.n} unit${m.n > 1 ? "s" : ""} available now`, tone: "flat" });
   }
   return items;
 }
