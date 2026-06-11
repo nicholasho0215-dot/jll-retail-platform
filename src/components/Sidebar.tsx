@@ -72,7 +72,7 @@ export function Sidebar({
         ))}
       </nav>
       <div className="p-4 m-3 mb-[max(1rem,env(safe-area-inset-bottom))] rounded-xl bg-muted/60 text-[11px] leading-relaxed text-muted-foreground">
-        <span className="font-semibold text-foreground">Data snapshot:</span> Q1 2026 · URA, SingStat, STB & curated news. Production build connects live APIs.
+        <span className="font-semibold text-foreground">Data as of 11 Jun 2026:</span> URA Q1 26 stats · SingStat Apr 26 · STB Apr 26 · curated news. Production build connects live APIs.
       </div>
     </aside>
   );
