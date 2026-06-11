@@ -41,7 +41,7 @@ export function Pipeline() {
                 <span className="text-[11px] font-bold text-muted-foreground tabular-nums">{stageDeals.length}</span>
               </div>
               {stageDeals.map((d) => (
-                <Card key={d.id} className={cn("rounded-xl shadow-sm border-border/70 border-t-[3px]", stageColors[stage])}>
+                <Card key={d.id} className={cn("rounded-xl shadow-sm border-border/70 border-t-[3px] card-lift", stageColors[stage])}>
                   <CardContent className="p-3">
                     <div className="font-bold text-[13px] leading-tight">{d.tenant}</div>
                     <div className="text-[11px] text-muted-foreground font-medium mt-0.5">{d.requirement}</div>

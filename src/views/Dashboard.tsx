@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { motion, animate, useReducedMotion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
@@ -6,16 +8,37 @@ import {
 } from "recharts";
 import { kpis, rentalTrend, vacancyTrend, supplyPipeline } from "@/data/marketData";
 
-function KpiCard({ k }: { k: { value: number; change: number; label: string; unit: string; direction: string } }) {
+function useCountUp(target: number) {
+  const reduce = useReducedMotion();
+  const decimals = (String(target).split(".")[1] ?? "").length;
+  const [val, setVal] = useState(reduce ? target : 0);
+  useEffect(() => {
+    if (reduce) {
+      setVal(target);
+      return;
+    }
+    const controls = animate(0, target, { duration: 1.1, ease: [0.22, 1, 0.36, 1], onUpdate: setVal });
+    return () => controls.stop();
+  }, [target, reduce]);
+  return val.toFixed(decimals);
+}
+
+function KpiCard({ k, index }: { k: { value: number; change: number; label: string; unit: string; direction: string }; index: number }) {
   const up = k.change > 0;
   const Icon = k.change === 0 ? Minus : up ? TrendingUp : TrendingDown;
   const good = k.direction === "neutral" ? null : k.direction === "up-good" ? up : !up;
+  const display = useCountUp(k.value);
   return (
-    <Card className="rounded-2xl shadow-sm border-border/70">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.06, ease: "easeOut" }}
+    >
+    <Card className="rounded-2xl shadow-sm border-border/70 card-lift h-full">
       <CardContent className="pt-5 pb-4">
         <div className="text-[12px] font-semibold text-muted-foreground">{k.label}</div>
         <div className="mt-1.5 flex items-baseline gap-1.5">
-          <span className="text-[26px] font-extrabold tabular-nums tracking-tight">{k.value}</span>
+          <span className="text-[26px] font-extrabold tabular-nums tracking-tight">{display}</span>
           <span className="text-[12px] text-muted-foreground font-medium">{k.unit}</span>
         </div>
         <div className={`mt-1 inline-flex items-center gap-1 text-[12px] font-bold ${
@@ -26,6 +49,7 @@ function KpiCard({ k }: { k: { value: number; change: number; label: string; uni
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 }
 
@@ -33,7 +57,7 @@ export function Dashboard() {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
-        {Object.values(kpis).map((k) => <KpiCard key={k.label} k={k} />)}
+        {Object.values(kpis).map((k, i) => <KpiCard key={k.label} k={k} index={i} />)}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-5">
@@ -90,7 +114,7 @@ export function Dashboard() {
         <CardContent>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {supplyPipeline.map((p) => (
-              <div key={p.project} className="rounded-xl border border-border/70 bg-muted/40 p-3.5">
+              <div key={p.project} className="rounded-xl border border-border/70 bg-muted/40 p-3.5 card-lift">
                 <div className="text-[13px] font-bold leading-snug">{p.project}</div>
                 <div className="text-[11.5px] text-muted-foreground mt-0.5">{p.zone}</div>
                 <div className="mt-2 flex items-center justify-between">

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, Sparkle } from "lucide-react";
@@ -38,7 +39,7 @@ export function Tracker() {
   return (
     <div className="space-y-5">
       <div className="grid sm:grid-cols-3 gap-3 sm:gap-4">
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-2xl shadow-sm border-border/70 card-lift">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
             <div className="h-11 w-11 rounded-xl bg-emerald-100 flex items-center justify-center">
               <ArrowUpRight className="h-5 w-5 text-emerald-600" />
@@ -49,7 +50,7 @@ export function Tracker() {
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-2xl shadow-sm border-border/70 card-lift">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
             <div className="h-11 w-11 rounded-xl bg-rose-100 flex items-center justify-center">
               <ArrowDownRight className="h-5 w-5 text-rose-600" />
@@ -60,7 +61,7 @@ export function Tracker() {
             </div>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl shadow-sm border-border/70">
+        <Card className="rounded-2xl shadow-sm border-border/70 card-lift">
           <CardContent className="pt-5 pb-4 flex items-center gap-3">
             <div className="h-11 w-11 rounded-xl bg-violet-100 flex items-center justify-center">
               <Sparkle className="h-5 w-5 text-violet-600" />
@@ -83,12 +84,18 @@ export function Tracker() {
                   <button
                     key={t}
                     onClick={() => setType(t)}
-                    className={cn(
-                      "rounded-full px-3 py-1 text-[11.5px] font-bold transition-colors",
-                      type === t ? "bg-foreground text-background" : "bg-muted text-muted-foreground hover:text-foreground"
-                    )}
+                    className="relative rounded-full px-3 py-1 text-[11.5px] font-bold bg-muted"
                   >
-                    {t}
+                    {type === t && (
+                      <motion.span
+                        layoutId="tracker-type-pill"
+                        className="absolute inset-0 rounded-full bg-foreground"
+                        transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                      />
+                    )}
+                    <span className={cn("relative transition-colors", type === t ? "text-background" : "text-muted-foreground hover:text-foreground")}>
+                      {t}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -98,12 +105,18 @@ export function Tracker() {
                 <button
                   key={c}
                   onClick={() => setCat(c)}
-                  className={cn(
-                    "rounded-full px-3 py-1 text-[11.5px] font-semibold transition-colors",
-                    cat === c ? "bg-accent text-accent-foreground font-bold" : "bg-muted/60 text-muted-foreground hover:text-foreground"
-                  )}
+                  className="relative rounded-full px-3 py-1 text-[11.5px] font-semibold bg-muted/60"
                 >
-                  {c}
+                  {cat === c && (
+                    <motion.span
+                      layoutId="tracker-cat-pill"
+                      className="absolute inset-0 rounded-full bg-accent"
+                      transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                    />
+                  )}
+                  <span className={cn("relative transition-colors", cat === c ? "text-accent-foreground font-bold" : "text-muted-foreground hover:text-foreground")}>
+                    {c}
+                  </span>
                 </button>
               ))}
             </div>
