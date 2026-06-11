@@ -18,6 +18,11 @@ const meta: Record<ViewId, { title: string; subtitle: string; img: string }> = {
     subtitle: "Where the leasing heat is across the island",
     img: unsplash("KZhMBYzKtNg"), // Orchard Road street scene
   },
+  spaces: {
+    title: "Space Finder",
+    subtitle: "Vacant and expiring units, mall by mall — spot the next opportunity",
+    img: unsplash("b3ubz8yNlEI"), // Jewel Changi Rain Vortex interior
+  },
   tracker: {
     title: "Open / Close Tracker",
     subtitle: "Who's moving in, who's moving out",

@@ -1,11 +1,12 @@
-import { LayoutDashboard, Map, Store, Newspaper, KanbanSquare, Sparkles, Activity, X } from "lucide-react";
+import { LayoutDashboard, Map, Store, Newspaper, KanbanSquare, Sparkles, Activity, X, DoorOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type ViewId = "dashboard" | "heatmap" | "tracker" | "news" | "pipeline" | "assistant";
+export type ViewId = "dashboard" | "heatmap" | "spaces" | "tracker" | "news" | "pipeline" | "assistant";
 
 const navItems: { id: ViewId; label: string; icon: typeof Map; hint: string }[] = [
   { id: "dashboard", label: "Market Pulse", icon: LayoutDashboard, hint: "KPIs & trends" },
   { id: "heatmap", label: "Retail Heatmap", icon: Map, hint: "Clusters & rents" },
+  { id: "spaces", label: "Space Finder", icon: DoorOpen, hint: "Vacant & expiring units" },
   { id: "tracker", label: "Open / Close", icon: Store, hint: "Store movements" },
   { id: "news", label: "News Desk", icon: Newspaper, hint: "Curated & summarised" },
   { id: "pipeline", label: "Deal Pipeline", icon: KanbanSquare, hint: "Team deals & expiries" },
