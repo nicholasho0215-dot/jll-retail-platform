@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: "0 20 * * 0" # weekly, Monday 04:00 SGT
   workflow_dispatch:
-  push: # TEMP: verification run before merge — remove
-    branches: ["claude/jll-retail-agents-qa-oe26mu"]
 
 jobs:
   accessibility:
