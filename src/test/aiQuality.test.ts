@@ -26,7 +26,7 @@ const client = () => new Anthropic({ apiKey: API_KEY, dangerouslyAllowBrowser: t
 const marketContext = buildMarketContext();
 
 interface Verdict {
-  contradictions: string[]; // empty = grounded
+  grounded: boolean;
   score: number; // 1 (ungrounded) … 5 (fully grounded)
   notes: string;
 }
@@ -63,35 +63,38 @@ ${answer}
 REFERENCE (ground truth / evaluation criteria):
 ${reference}
 
-List every claim in the answer that CONTRADICTS the reference or asserts a specific figure/date/event that cannot be found in it. Rules:
+Verify the answer claim by claim against the reference. Rules:
 - Equivalent formatting is NOT a contradiction: unit "#07-01, level L7" may be cited as "L7"; "2026-08-01" as "1 Aug 2026"; figures may be rounded or restated.
 - Paraphrase and reasonable inference over reference facts are NOT contradictions.
 - If the reference has no data on something, a grounded answer says so (it may still offer related facts that ARE in the reference).
-- Only include clear, specific, verifiable contradictions. If everything checks out, the list is empty.
+- The answer is NOT GROUNDED only if it clearly contradicts the reference or asserts specific figures/dates/events that cannot be found in it.
 
-Respond with ONLY a JSON object, no markdown fences:
-{"contradictions": ["<each clear contradiction, quoted from the answer>"], "score": <1-5 overall grounding quality>, "notes": "<one sentence>"}`,
+Write your verification analysis first (plain prose, line by line). Then end your reply with exactly two final lines:
+SCORE: <1-5 overall grounding quality>
+VERDICT: <GROUNDED, or NOT GROUNDED — followed by the fabricated/contradicting claims>`,
       },
     ],
   });
-  let raw = res.content
+  const raw = res.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
     .map((b) => b.text)
     .join(" ")
     .trim();
-  if (raw.includes("```")) raw = raw.split("```").filter((s) => s.trim())[0].replace(/^json/i, "");
-  const data = JSON.parse(raw.trim());
+  const scoreMatch = raw.match(/SCORE:\s*([1-5])/i);
+  const verdictMatch = raw.match(/VERDICT:\s*(.+)/is);
+  if (!scoreMatch || !verdictMatch) throw new Error(`Judge reply missing SCORE/VERDICT lines:\n${raw}`);
+  const verdictLine = verdictMatch[1].trim();
   return {
-    contradictions: Array.isArray(data.contradictions) ? data.contradictions.map(String) : [],
-    score: Number(data.score),
-    notes: String(data.notes ?? ""),
+    grounded: /^GROUNDED\b/i.test(verdictLine),
+    score: Number(scoreMatch[1]),
+    notes: verdictLine,
   };
 }
 
 async function expectGrounded(question: string, answer: string, reference: string) {
   const verdict = await judge(question, answer, reference);
   console.log(`Q: ${question}\nA: ${answer}\nJudge: ${JSON.stringify(verdict)}\n`);
-  expect(verdict.contradictions, `contradictions found: ${verdict.notes}`).toEqual([]);
+  expect(verdict.grounded, `not grounded: ${verdict.notes}`).toBe(true);
   expect(verdict.score, `low grounding score: ${verdict.notes}`).toBeGreaterThanOrEqual(3);
 }
 
@@ -136,10 +139,10 @@ describe.skipIf(!enabled || !BACKEND_URL)("live intelligence server", () => {
     const verdict = await judge(
       "Are these classified news summaries relevant to Singapore retail / retail real estate, and are the summaries coherent?",
       batch,
-      "Every item should plausibly relate to Singapore retail, retail property, REITs, F&B/brands in Singapore, or Singapore consumer/macro data. Coherent 2-3 sentence professional summaries. List an item as a contradiction only if it is clearly off-topic spam or gibberish.",
+      "Every item should plausibly relate to Singapore retail, retail property, REITs, F&B/brands in Singapore, or Singapore consumer/macro data. Coherent 2-3 sentence professional summaries. VERDICT is NOT GROUNDED only if items are clearly off-topic spam or gibberish.",
     );
     console.log(`Feed verdict: ${JSON.stringify(verdict)}`);
-    expect(verdict.contradictions).toEqual([]);
+    expect(verdict.grounded, `feed not relevant: ${verdict.notes}`).toBe(true);
     expect(verdict.score).toBeGreaterThanOrEqual(3);
   });
 
