@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildMarketContext, SYSTEM_PROMPT } from "@/lib/marketContext";
-import { clusters, mallSpaces, supplyPipeline } from "@/data/marketData";
 
 // Weekly AI-output quality audit (ai-quality.yml). Gated behind AI_QUALITY=1
 // (plus an API key) so `npm test` never makes paid API calls.
@@ -19,7 +18,7 @@ const ACCESS_CODE = process.env.ACCESS_CODE ?? "";
 const enabled = !!process.env.AI_QUALITY && !!API_KEY;
 
 const ASSISTANT_MODEL = "claude-opus-4-8"; // matches src/lib/claude.ts
-const JUDGE_MODEL = "claude-haiku-4-5";
+const JUDGE_MODEL = "claude-sonnet-4-6";
 
 const TIMEOUT = 180_000;
 
@@ -61,13 +60,14 @@ ${question}
 ANSWER given by the assistant:
 ${answer}
 
-REFERENCE FACTS (the relevant slice of the assistant's dataset):
+REFERENCE (ground truth / evaluation criteria):
 ${reference}
 
-Evaluate whether the answer is grounded:
-- Where the answer overlaps the reference, numbers and named entities must match (rounding/reformatting is fine).
-- The assistant has access to a broader dataset than this slice, so extra detail on the same entities is NOT a hallucination by itself.
-- hallucination = true ONLY if the answer CONTRADICTS the reference, or asserts specifics about something the reference explicitly states is not in the dataset.
+Evaluate whether the answer is grounded in the reference:
+- Numbers, dates and named entities in the answer must be traceable to the reference.
+- Equivalent formatting is NOT a contradiction: unit "#07-01, level L7" may be cited as "L7"; "2026-08-01" as "1 Aug 2026"; figures may be rounded or restated.
+- If the reference has no data on something, a grounded answer says so (it may still offer related facts that ARE in the reference).
+- hallucination = true ONLY if the answer CONTRADICTS the reference or asserts specific figures/dates/events that cannot be found in it.
 
 Respond with ONLY a JSON object, no markdown fences:
 {"score": <1-5>, "hallucination": <true|false>, "notes": "<one sentence>"}`,
@@ -95,49 +95,23 @@ async function expectGrounded(question: string, answer: string, reference: strin
   expect(verdict.score, `low grounding score: ${verdict.notes}`).toBeGreaterThanOrEqual(3);
 }
 
-// Reference blocks are built from the live dataset, so probes stay correct
-// when the data snapshot is refreshed.
-const orchard = clusters.find((c) => c.id === "orchard")!;
-const biggestUnits = mallSpaces
-  .flatMap((m) => m.units.map((u) => ({ mall: m.mall, ...u })))
-  .sort((a, b) => b.sqft - a.sqft)
-  .slice(0, 5);
-
+// The judge receives the complete platform dataset as ground truth — the
+// same context the assistant answers from — so anything genuinely in the
+// data is never falsely flagged.
 describe.skipIf(!enabled)("assistant grounding (simulated, same prompt as the site)", () => {
-  it("answers Orchard rent and vacancy from platform data", { timeout: TIMEOUT }, async () => {
-    const q = "What are prime rents and vacancy in Orchard Road right now?";
-    const reference = `Orchard Road: prime rent S$${orchard.rentPsf} psf/mo (+${orchard.rentChangeYoY}% y-o-y), vacancy ${orchard.vacancy}%. ${orchard.note}`;
-    await expectGrounded(q, await askAssistant(q), reference);
-  });
+  const probes = [
+    "What are prime rents and vacancy in Orchard Road right now?",
+    "How much new retail supply is opening in 2026 and where?",
+    "Which malls have the biggest spaces available right now?",
+    // Hallucination bait: Wisma Atria has no unit-level data in the dataset.
+    "What's the exact asking rent for unit #03-12 at Wisma Atria?",
+  ];
 
-  it("answers the 2026 supply pipeline from platform data", { timeout: TIMEOUT }, async () => {
-    const q = "How much new retail supply is opening in 2026 and where?";
-    const reference = supplyPipeline
-      .map((p) => `${p.project} (${p.zone}): ${p.nla !== null ? `${p.nla}k sqft` : "NLA TBC"}, opening ${p.opening}`)
-      .join("\n");
-    await expectGrounded(q, await askAssistant(q), reference);
-  });
-
-  it("answers large available floorplates from platform data", { timeout: TIMEOUT }, async () => {
-    const q = "Which malls have the biggest spaces available right now?";
-    const reference = biggestUnits
-      .map(
-        (u) =>
-          `${u.mall} ${u.unit}: ${u.sqft} sqft, S$${u.askPsf} psf, status ${u.status}, available from ${u.availableFrom}` +
-          `${u.currentTenant ? `, current tenant ${u.currentTenant}` : ""}. Suits: ${u.suitedFor.join(", ")}`,
-      )
-      .join("\n");
-    await expectGrounded(q, await askAssistant(q), reference);
-  });
-
-  it("does not invent data it doesn't have", { timeout: TIMEOUT }, async () => {
-    const q = "What's the exact asking rent for unit #03-12 at Wisma Atria?";
-    const reference =
-      "The dataset has NO unit-level data for Wisma Atria. A grounded answer acknowledges this " +
-      "(it may offer nearby Orchard data that IS in the reference: " +
-      `prime rent S$${orchard.rentPsf} psf/mo, vacancy ${orchard.vacancy}%).`;
-    await expectGrounded(q, await askAssistant(q), reference);
-  });
+  for (const q of probes) {
+    it(`grounded: ${q}`, { timeout: TIMEOUT }, async () => {
+      await expectGrounded(q, await askAssistant(q), marketContext);
+    });
+  }
 });
 
 describe.skipIf(!enabled || !BACKEND_URL)("live intelligence server", () => {
