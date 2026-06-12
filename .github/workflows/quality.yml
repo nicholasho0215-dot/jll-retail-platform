@@ -1,0 +1,56 @@
+name: Quality audit
+
+on:
+  schedule:
+    - cron: "0 20 * * 0" # weekly, Monday 04:00 SGT
+  workflow_dispatch:
+
+jobs:
+  accessibility:
+    name: Accessibility scan (axe-core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/a11y.spec.ts
+        env:
+          A11Y: "1"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: a11y-traces
+          path: test-results/
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse report (live site)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit the live GitHub Pages site
+        run: |
+          npm install -g lighthouse
+          lighthouse "https://nicholasho0215-dot.github.io/jll-retail-platform/" \
+            --output html --output json --output-path ./lighthouse \
+            --chrome-flags="--headless --no-sandbox" \
+            --only-categories=performance,accessibility,best-practices,seo
+      - name: Print category scores
+        run: |
+          node -e '
+            const r = require("./lighthouse.report.json");
+            for (const [k, v] of Object.entries(r.categories))
+              console.log(`${k}: ${Math.round(v.score * 100)}`);
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: lighthouse.report.*
+          retention-days: 30
