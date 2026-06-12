@@ -26,8 +26,8 @@ const client = () => new Anthropic({ apiKey: API_KEY, dangerouslyAllowBrowser: t
 const marketContext = buildMarketContext();
 
 interface Verdict {
+  contradictions: string[]; // empty = grounded
   score: number; // 1 (ungrounded) … 5 (fully grounded)
-  hallucination: boolean;
   notes: string;
 }
 
@@ -63,14 +63,14 @@ ${answer}
 REFERENCE (ground truth / evaluation criteria):
 ${reference}
 
-Evaluate whether the answer is grounded in the reference:
-- Numbers, dates and named entities in the answer must be traceable to the reference.
+List every claim in the answer that CONTRADICTS the reference or asserts a specific figure/date/event that cannot be found in it. Rules:
 - Equivalent formatting is NOT a contradiction: unit "#07-01, level L7" may be cited as "L7"; "2026-08-01" as "1 Aug 2026"; figures may be rounded or restated.
+- Paraphrase and reasonable inference over reference facts are NOT contradictions.
 - If the reference has no data on something, a grounded answer says so (it may still offer related facts that ARE in the reference).
-- hallucination = true ONLY if the answer CONTRADICTS the reference or asserts specific figures/dates/events that cannot be found in it.
+- Only include clear, specific, verifiable contradictions. If everything checks out, the list is empty.
 
 Respond with ONLY a JSON object, no markdown fences:
-{"score": <1-5>, "hallucination": <true|false>, "notes": "<one sentence>"}`,
+{"contradictions": ["<each clear contradiction, quoted from the answer>"], "score": <1-5 overall grounding quality>, "notes": "<one sentence>"}`,
       },
     ],
   });
@@ -82,8 +82,8 @@ Respond with ONLY a JSON object, no markdown fences:
   if (raw.includes("```")) raw = raw.split("```").filter((s) => s.trim())[0].replace(/^json/i, "");
   const data = JSON.parse(raw.trim());
   return {
+    contradictions: Array.isArray(data.contradictions) ? data.contradictions.map(String) : [],
     score: Number(data.score),
-    hallucination: Boolean(data.hallucination),
     notes: String(data.notes ?? ""),
   };
 }
@@ -91,7 +91,7 @@ Respond with ONLY a JSON object, no markdown fences:
 async function expectGrounded(question: string, answer: string, reference: string) {
   const verdict = await judge(question, answer, reference);
   console.log(`Q: ${question}\nA: ${answer}\nJudge: ${JSON.stringify(verdict)}\n`);
-  expect(verdict.hallucination, `hallucination flagged: ${verdict.notes}`).toBe(false);
+  expect(verdict.contradictions, `contradictions found: ${verdict.notes}`).toEqual([]);
   expect(verdict.score, `low grounding score: ${verdict.notes}`).toBeGreaterThanOrEqual(3);
 }
 
@@ -136,10 +136,10 @@ describe.skipIf(!enabled || !BACKEND_URL)("live intelligence server", () => {
     const verdict = await judge(
       "Are these classified news summaries relevant to Singapore retail / retail real estate, and are the summaries coherent?",
       batch,
-      "Every item should plausibly relate to Singapore retail, retail property, REITs, F&B/brands in Singapore, or Singapore consumer/macro data. Coherent 2-3 sentence professional summaries. hallucination=true only if items are clearly off-topic spam or gibberish.",
+      "Every item should plausibly relate to Singapore retail, retail property, REITs, F&B/brands in Singapore, or Singapore consumer/macro data. Coherent 2-3 sentence professional summaries. List an item as a contradiction only if it is clearly off-topic spam or gibberish.",
     );
     console.log(`Feed verdict: ${JSON.stringify(verdict)}`);
-    expect(verdict.hallucination).toBe(false);
+    expect(verdict.contradictions).toEqual([]);
     expect(verdict.score).toBeGreaterThanOrEqual(3);
   });
 
