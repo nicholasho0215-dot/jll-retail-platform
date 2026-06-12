@@ -13,6 +13,8 @@ function useCountUp(target: number) {
   const [val, setVal] = useState(reduce ? target : 0);
   useEffect(() => {
     if (reduce) {
+      // Reduced-motion users must see the final figure immediately, not 0.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVal(target);
       return;
     }

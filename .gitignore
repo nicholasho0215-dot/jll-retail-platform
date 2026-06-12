@@ -27,3 +27,11 @@ deploy.cmd
 *.njsproj
 *.sln
 *.sw?
+
+# Test artifacts
+test-results
+playwright-report
+coverage
+__pycache__
+*.pyc
+server/articles.db

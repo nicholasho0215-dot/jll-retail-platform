@@ -27,6 +27,25 @@ npm run dev      # local dev server
 npm run build    # type-check + production build to dist/
 ```
 
+## Testing
+
+CI (GitHub Actions, `.github/workflows/ci.yml`) runs all of this on every push
+and pull request: lint, typecheck, build, unit tests, server tests and browser
+smoke tests.
+
+```sh
+npm test                 # Vitest unit suite (rule engine, backend client, app smoke)
+npm run test:watch       # same, in watch mode
+
+npm run build
+npx playwright install chromium   # once
+npm run test:e2e         # Playwright browser smoke tests against the built site
+
+cd server
+pip install -r requirements-dev.txt
+python -m pytest tests/  # FastAPI server tests (no API keys needed)
+```
+
 ## Deploying
 
 GitHub Pages serves the `gh-pages` branch. To publish, build and push `dist/`:
