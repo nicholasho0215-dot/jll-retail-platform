@@ -156,7 +156,6 @@ describe.skipIf(!enabled || !BACKEND_URL)("live intelligence server", () => {
     });
     expect(res.ok, `server returned ${res.status}`).toBe(true);
     const { reply } = await res.json();
-    const reference = `Orchard Road: prime rent S$${orchard.rentPsf} psf/mo, vacancy ${orchard.vacancy}%.`;
-    await expectGrounded("Orchard rents and vacancy?", String(reply), reference);
+    await expectGrounded("Orchard rents and vacancy?", String(reply), marketContext);
   });
 });
