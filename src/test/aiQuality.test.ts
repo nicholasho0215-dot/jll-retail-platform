@@ -48,7 +48,7 @@ async function askAssistant(question: string): Promise<string> {
 async function judge(question: string, answer: string, reference: string): Promise<Verdict> {
   const res = await client().messages.create({
     model: JUDGE_MODEL,
-    max_tokens: 500,
+    max_tokens: 2000,
     messages: [
       {
         role: "user",
@@ -69,7 +69,7 @@ Verify the answer claim by claim against the reference. Rules:
 - If the reference has no data on something, a grounded answer says so (it may still offer related facts that ARE in the reference).
 - The answer is NOT GROUNDED only if it clearly contradicts the reference or asserts specific figures/dates/events that cannot be found in it.
 
-Write your verification analysis first (plain prose, line by line). Then end your reply with exactly two final lines:
+Write a CONCISE verification analysis first (plain prose, at most 8 short lines — don't restate every correct figure, focus on anything questionable). Then end your reply with exactly two final lines:
 SCORE: <1-5 overall grounding quality>
 VERDICT: <GROUNDED, or NOT GROUNDED — followed by the fabricated/contradicting claims>`,
       },
