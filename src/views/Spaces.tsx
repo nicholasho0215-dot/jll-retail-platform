@@ -61,7 +61,8 @@ export function Spaces() {
   const toggle = (mall: string) =>
     setOpen((prev) => {
       const next = new Set(prev);
-      next.has(mall) ? next.delete(mall) : next.add(mall);
+      if (next.has(mall)) next.delete(mall);
+      else next.add(mall);
       return next;
     });
 
