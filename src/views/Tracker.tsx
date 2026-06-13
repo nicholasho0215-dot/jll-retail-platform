@@ -166,13 +166,13 @@ export function Tracker() {
           <CardContent className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weeklyVelocity} margin={{ top: 4, right: 8, bottom: 0, left: -22 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#eee5d8" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#ECEEF1" vertical={false} />
                 <XAxis dataKey="week" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
-                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #eee5d8", fontSize: 12 }} cursor={{ fill: "#f5efe2" }} />
+                <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #ECEEF1", fontSize: 12 }} cursor={{ fill: "#F4F5F7" }} />
                 <Legend wrapperStyle={{ fontSize: 12, fontWeight: 600 }} />
                 <Bar dataKey="opens" name="Opens" fill="#2f9e6e" radius={[5, 5, 0, 0]} />
-                <Bar dataKey="closes" name="Closes" fill="#d6202f" radius={[5, 5, 0, 0]} />
+                <Bar dataKey="closes" name="Closes" fill="#E30613" radius={[5, 5, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

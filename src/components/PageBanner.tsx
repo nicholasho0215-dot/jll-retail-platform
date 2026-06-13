@@ -139,7 +139,7 @@ export function PageBanner({ view }: { view: ViewId }) {
           >
             {m.title}
           </h1>
-          <div className="mt-3 h-[3px] w-12 bg-[#e0162b]" />
+          <div className="mt-3 h-[3px] w-12 bg-[#E30613]" />
           <p className="text-white/70 text-[12.5px] sm:text-[13.5px] font-medium mt-3 max-w-[34rem]">{m.subtitle}</p>
         </motion.div>
       </div>
