@@ -4,26 +4,27 @@
 
 @layer base {
   :root {
-    --background: 40 25% 97%;
-    --foreground: 222 30% 10%;
+    /* JLL brand: crisp white, cool neutral grays, vivid JLL red, squared corners. */
+    --background: 210 20% 98%;
+    --foreground: 220 18% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 222 30% 10%;
+    --card-foreground: 220 18% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 30% 10%;
-    --primary: 353 82% 42%;
+    --popover-foreground: 220 18% 12%;
+    --primary: 356 90% 46%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 22% 93%;
-    --secondary-foreground: 222 30% 10%;
-    --muted: 40 18% 93%;
-    --muted-foreground: 222 10% 42%;
-    --accent: 40 22% 91%;
-    --accent-foreground: 222 30% 10%;
+    --secondary: 210 16% 95%;
+    --secondary-foreground: 220 18% 12%;
+    --muted: 210 16% 95%;
+    --muted-foreground: 215 12% 42%;
+    --accent: 210 16% 93%;
+    --accent-foreground: 220 18% 12%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 40 12% 86%;
-    --input: 40 12% 84%;
-    --ring: 353 82% 42%;
-    --radius: 0.625rem;
+    --border: 214 15% 88%;
+    --input: 214 15% 86%;
+    --ring: 356 90% 46%;
+    --radius: 0.25rem;
   }
 }
 
@@ -76,7 +77,7 @@
   transition: border-color 150ms ease, transform 150ms ease;
 }
 .card-lift:hover {
-  border-color: hsl(222 30% 10% / 0.35);
+  border-color: hsl(220 18% 12% / 0.3);
   transform: translateY(-1px);
 }
 

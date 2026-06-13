@@ -42,7 +42,7 @@ function KpiCell({ k, index }: { k: { value: number; change: number; label: stri
         <span className="text-[11px] text-muted-foreground font-semibold">{k.unit}</span>
       </div>
       <div className={`mt-2 inline-flex items-center gap-1 text-[11.5px] font-bold ${
-        good === null ? "text-muted-foreground" : good ? "text-emerald-700" : "text-[#c41324]"
+        good === null ? "text-muted-foreground" : good ? "text-emerald-700" : "text-[#E30613]"
       }`}>
         <Icon className="h-3.5 w-3.5" />
         {k.change === 0 ? "flat q-o-q" : `${up ? "+" : ""}${k.change}${k.changeLabel}`}
@@ -75,12 +75,12 @@ export function Dashboard() {
           <CardContent className="h-[230px] sm:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={rentalTrend} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e9e4da" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E6E8EC" />
                 <XAxis dataKey="quarter" tick={{ fontSize: 11, fontFamily: "inherit" }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[12, 32]} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e9e4da", fontSize: 12 }} />
-                <Line type="monotone" dataKey="islandPrime" name="Island-wide prime" stroke="#8a8378" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="orchard" name="Orchard" stroke="#c41324" strokeWidth={2.5} dot={false} />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #E6E8EC", fontSize: 12 }} />
+                <Line type="monotone" dataKey="islandPrime" name="Island-wide prime" stroke="#8B9097" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="orchard" name="Orchard" stroke="#E30613" strokeWidth={2.5} dot={false} />
                 <Line type="monotone" dataKey="suburban" name="Suburban" stroke="#16181d" strokeWidth={2.5} dot={false} />
               </LineChart>
             </ResponsiveContainer>
@@ -94,15 +94,15 @@ export function Dashboard() {
               <AreaChart data={vacancyTrend} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
                 <defs>
                   <linearGradient id="vac" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#c41324" stopOpacity={0.14} />
-                    <stop offset="100%" stopColor="#c41324" stopOpacity={0.02} />
+                    <stop offset="0%" stopColor="#E30613" stopOpacity={0.14} />
+                    <stop offset="100%" stopColor="#E30613" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e9e4da" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E6E8EC" />
                 <XAxis dataKey="quarter" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} domain={[5.8, 7.8]} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e9e4da", fontSize: 12 }} />
-                <Area type="monotone" dataKey="vacancy" name="Vacancy %" stroke="#c41324" strokeWidth={2.5} fill="url(#vac)" />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #E6E8EC", fontSize: 12 }} />
+                <Area type="monotone" dataKey="vacancy" name="Vacancy %" stroke="#E30613" strokeWidth={2.5} fill="url(#vac)" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -117,7 +117,7 @@ export function Dashboard() {
             {supplyPipeline.map((p) => (
               <div key={p.project} className="flex items-baseline justify-between gap-4 py-3 group">
                 <div className="min-w-0">
-                  <span className="text-[13.5px] font-bold group-hover:text-[#c41324] transition-colors duration-150">{p.project}</span>
+                  <span className="text-[13.5px] font-bold group-hover:text-[#E30613] transition-colors duration-150">{p.project}</span>
                   <span className="ml-2 text-[11.5px] text-muted-foreground font-medium">{p.zone}</span>
                 </div>
                 <div className="flex items-baseline gap-4 shrink-0 tabular-nums">
