@@ -84,12 +84,12 @@ export function Tracker() {
                   <button
                     key={t}
                     onClick={() => setType(t)}
-                    className="relative rounded-full px-3 py-1 text-[11.5px] font-bold bg-muted"
+                    className="relative rounded-[2px] px-3 py-1 text-[11.5px] font-bold bg-muted"
                   >
                     {type === t && (
                       <motion.span
                         layoutId="tracker-type-pill"
-                        className="absolute inset-0 rounded-full bg-foreground"
+                        className="absolute inset-0 rounded-[2px] bg-foreground"
                         transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                       />
                     )}
@@ -105,12 +105,12 @@ export function Tracker() {
                 <button
                   key={c}
                   onClick={() => setCat(c)}
-                  className="relative rounded-full px-3 py-1 text-[11.5px] font-semibold bg-muted/60"
+                  className="relative rounded-[2px] px-3 py-1 text-[11.5px] font-semibold bg-muted/60"
                 >
                   {cat === c && (
                     <motion.span
                       layoutId="tracker-cat-pill"
-                      className="absolute inset-0 rounded-full bg-accent"
+                      className="absolute inset-0 rounded-[2px] bg-accent"
                       transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                     />
                   )}
@@ -137,8 +137,8 @@ export function Tracker() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-bold text-[13.5px]">{m.brand}</span>
-                    <Badge variant="secondary" className="rounded-full text-[10px] font-bold">{m.category}</Badge>
-                    <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", signalStyles[m.signal])}>
+                    <Badge variant="secondary" className="rounded-[2px] text-[10px] font-bold">{m.category}</Badge>
+                    <span className={cn("rounded-[2px] px-2 py-0.5 text-[10px] font-bold", signalStyles[m.signal])}>
                       {m.signal.replace("-", " ")}
                     </span>
                     <span className="ml-auto text-[11px] text-muted-foreground font-medium tabular-nums">
@@ -172,7 +172,7 @@ export function Tracker() {
                 <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #eee5d8", fontSize: 12 }} cursor={{ fill: "#f5efe2" }} />
                 <Legend wrapperStyle={{ fontSize: 12, fontWeight: 600 }} />
                 <Bar dataKey="opens" name="Opens" fill="#2f9e6e" radius={[5, 5, 0, 0]} />
-                <Bar dataKey="closes" name="Closes" fill="#d6202f" radius={[5, 5, 0, 0]} />
+                <Bar dataKey="closes" name="Closes" fill="#e30613" radius={[5, 5, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

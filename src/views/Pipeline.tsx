@@ -94,7 +94,7 @@ export function Pipeline() {
                       {new Date(e.expiry).toLocaleDateString("en-SG", { month: "short", year: "numeric" })}
                     </td>
                     <td className="py-2.5 text-right">
-                      <Badge className={cn("rounded-full text-[10px] font-bold", urgencyStyles[e.urgency])} variant="secondary">
+                      <Badge className={cn("rounded-[2px] text-[10px] font-bold", urgencyStyles[e.urgency])} variant="secondary">
                         {e.urgency}
                       </Badge>
                     </td>

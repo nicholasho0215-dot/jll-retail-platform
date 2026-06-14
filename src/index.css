@@ -4,26 +4,27 @@
 
 @layer base {
   :root {
-    --background: 40 25% 97%;
-    --foreground: 222 30% 10%;
+    /* JLL house palette: white surfaces, near-black ink, pure JLL red (#E30613) */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 222 30% 10%;
+    --card-foreground: 0 0% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 30% 10%;
-    --primary: 353 82% 42%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 356 95% 46%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 22% 93%;
-    --secondary-foreground: 222 30% 10%;
-    --muted: 40 18% 93%;
-    --muted-foreground: 222 10% 42%;
-    --accent: 40 22% 91%;
-    --accent-foreground: 222 30% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 40 12% 86%;
-    --input: 40 12% 84%;
-    --ring: 353 82% 42%;
-    --radius: 0.625rem;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 95%;
+    --accent-foreground: 0 0% 8%;
+    --destructive: 356 95% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 88%;
+    --ring: 356 95% 46%;
+    --radius: 0.1875rem;
   }
 }
 
@@ -33,6 +34,8 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   .tabular-nums {
     font-feature-settings: "tnum" on;
@@ -72,12 +75,22 @@
   animation: heat-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
+/* Crisp JLL hover: the hairline border picks up brand red, no movement. */
 .card-lift {
-  transition: border-color 150ms ease, transform 150ms ease;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 .card-lift:hover {
-  border-color: hsl(222 30% 10% / 0.35);
-  transform: translateY(-1px);
+  border-color: hsl(var(--primary));
+}
+
+/* Animated red rule that draws in under section headings on view enter. */
+@keyframes rule-in {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.rule-in {
+  transform-origin: left;
+  animation: rule-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

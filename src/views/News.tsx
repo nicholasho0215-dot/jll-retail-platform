@@ -38,12 +38,12 @@ function LiveFeed({ articles }: { articles: LiveArticle[] }) {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className="relative rounded-full px-3.5 py-1.5 text-[12px] font-bold bg-muted"
+            className="relative rounded-[2px] px-3.5 py-1.5 text-[12px] font-bold bg-muted"
           >
             {filter === f && (
               <motion.span
                 layoutId="live-filter-pill"
-                className="absolute inset-0 rounded-full bg-foreground"
+                className="absolute inset-0 rounded-[2px] bg-foreground"
                 transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
               />
             )}
@@ -71,12 +71,12 @@ function LiveFeed({ articles }: { articles: LiveArticle[] }) {
               >
                 <div className="flex items-center gap-2 flex-wrap">
                   {a.classification === "urgent" && (
-                    <span className="rounded-full bg-[#c41324] text-white px-2 py-0.5 text-[9.5px] font-black tracking-[0.08em] uppercase">Urgent</span>
+                    <span className="rounded-[2px] bg-[#e30613] text-white px-2 py-0.5 text-[9.5px] font-black tracking-[0.08em] uppercase">Urgent</span>
                   )}
                   <span className="text-[10.5px] font-bold text-muted-foreground uppercase tracking-[0.08em]">{a.source}</span>
                   <span className="text-[10.5px] text-muted-foreground font-medium tabular-nums ml-auto">{timeAgo(a.fetched_at)}</span>
                 </div>
-                <h3 className="font-bold text-[14px] leading-snug mt-1.5 group-hover:text-[#c41324] transition-colors duration-150 inline-flex items-start gap-1.5">
+                <h3 className="font-bold text-[14px] leading-snug mt-1.5 group-hover:text-[#e30613] transition-colors duration-150 inline-flex items-start gap-1.5">
                   {a.title}
                   <ExternalLink className="h-3 w-3 mt-1 shrink-0 opacity-0 group-hover:opacity-60 transition-opacity duration-150" />
                 </h3>
@@ -116,12 +116,12 @@ function SnapshotFeed() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className="relative rounded-full px-3.5 py-1.5 text-[12px] font-bold bg-muted"
+            className="relative rounded-[2px] px-3.5 py-1.5 text-[12px] font-bold bg-muted"
           >
             {filter === f && (
               <motion.span
                 layoutId="news-filter-pill"
-                className="absolute inset-0 rounded-full bg-foreground"
+                className="absolute inset-0 rounded-[2px] bg-foreground"
                 transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
               />
             )}
@@ -140,8 +140,8 @@ function SnapshotFeed() {
           <Card key={n.id} className="rounded-xl card-lift">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="rounded-full text-[10px] font-bold">{n.category}</Badge>
-                <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1", impactStyles[n.impact])}>
+                <Badge variant="secondary" className="rounded-[2px] text-[10px] font-bold">{n.category}</Badge>
+                <span className={cn("rounded-[2px] px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1", impactStyles[n.impact])}>
                   <Zap className="h-2.5 w-2.5" />
                   {n.impact} impact
                 </span>

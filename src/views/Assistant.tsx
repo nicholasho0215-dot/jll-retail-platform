@@ -245,7 +245,7 @@ export function Assistant() {
             <button
               key={sg}
               onClick={() => send(sg)}
-              className="rounded-full border border-border bg-card px-3 py-1.5 text-[11.5px] font-semibold text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+              className="rounded-[2px] border border-border bg-card px-3 py-1.5 text-[11.5px] font-semibold text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
             >
               {sg}
             </button>
