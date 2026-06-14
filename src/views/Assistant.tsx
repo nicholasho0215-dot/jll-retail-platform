@@ -260,7 +260,7 @@ export function Assistant() {
             placeholder={serverUrl || apiKey ? "Ask anything — market, news, research…" : "Ask about rents, vacancy, units, store moves…"}
             className="rounded-xl h-11 text-[13.5px]"
           />
-          <Button onClick={() => send()} disabled={busy} size="icon" className="rounded-xl h-11 w-11 shrink-0">
+          <Button onClick={() => send()} disabled={busy} size="icon" aria-label="Send message" className="rounded-xl h-11 w-11 shrink-0">
             <Send className="h-4 w-4" />
           </Button>
         </div>

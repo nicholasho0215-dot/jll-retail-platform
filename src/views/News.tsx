@@ -71,12 +71,12 @@ function LiveFeed({ articles }: { articles: LiveArticle[] }) {
               >
                 <div className="flex items-center gap-2 flex-wrap">
                   {a.classification === "urgent" && (
-                    <span className="rounded-[2px] bg-[#e30613] text-white px-2 py-0.5 text-[9.5px] font-black tracking-[0.08em] uppercase">Urgent</span>
+                    <span className="rounded-[2px] bg-[#E30613] text-white px-2 py-0.5 text-[9.5px] font-black tracking-[0.08em] uppercase">Urgent</span>
                   )}
                   <span className="text-[10.5px] font-bold text-muted-foreground uppercase tracking-[0.08em]">{a.source}</span>
                   <span className="text-[10.5px] text-muted-foreground font-medium tabular-nums ml-auto">{timeAgo(a.fetched_at)}</span>
                 </div>
-                <h3 className="font-bold text-[14px] leading-snug mt-1.5 group-hover:text-[#e30613] transition-colors duration-150 inline-flex items-start gap-1.5">
+                <h3 className="font-bold text-[14px] leading-snug mt-1.5 group-hover:text-[#E30613] transition-colors duration-150 inline-flex items-start gap-1.5">
                   {a.title}
                   <ExternalLink className="h-3 w-3 mt-1 shrink-0 opacity-0 group-hover:opacity-60 transition-opacity duration-150" />
                 </h3>
@@ -105,7 +105,8 @@ function SnapshotFeed() {
   const toggleSave = (id: number) =>
     setSaved((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
 

@@ -1,0 +1,28 @@
+name: Uptime check
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  live-site:
+    name: Live site responds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check GitHub Pages site
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 \
+            https://nicholasho0215-dot.github.io/jll-retail-platform/)
+          echo "HTTP $status"
+          test "$status" = "200"
+
+      # When the Railway intelligence server is deployed, set the repository
+      # variable BACKEND_URL (Settings → Secrets and variables → Variables)
+      # and this step starts verifying /health and feed freshness.
+      - name: Check intelligence server health
+        if: vars.BACKEND_URL != ''
+        run: |
+          body=$(curl -s --max-time 20 "${{ vars.BACKEND_URL }}/health")
+          echo "$body"
+          echo "$body" | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['ok'] is True"

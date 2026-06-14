@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 // warm heat ramp: low → amber, high → JLL red
 function heatColor(intensity: number) {
-  if (intensity >= 0.85) return "#e30613";
+  if (intensity >= 0.85) return "#E30613";
   if (intensity >= 0.7) return "#e8552d";
   if (intensity >= 0.6) return "#ef8430";
   if (intensity >= 0.5) return "#f2a93b";
@@ -61,7 +61,7 @@ export function Heatmap() {
             <div className="flex items-center gap-2 text-[11px] font-semibold text-muted-foreground">
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#f4c659" }} /> Warm
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#ef8430" }} /> Hot
-              <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#e30613" }} /> Hottest
+              <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#E30613" }} /> Hottest
             </div>
           </div>
           <div className="relative z-0 isolate rounded-xl overflow-hidden border border-border/60 h-[340px] sm:h-[420px] xl:h-[480px]">
