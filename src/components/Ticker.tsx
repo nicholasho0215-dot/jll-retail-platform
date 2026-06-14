@@ -32,17 +32,17 @@ function buildItems(): Item[] {
 }
 
 const toneArrow: Record<Item["tone"], { glyph: string; cls: string }> = {
-  up: { glyph: "▲", cls: "text-emerald-400" },
-  down: { glyph: "▼", cls: "text-rose-400" },
-  flat: { glyph: "◆", cls: "text-amber-400/90" },
+  up: { glyph: "▲", cls: "text-emerald-600" },
+  down: { glyph: "▼", cls: "text-primary" },
+  flat: { glyph: "·", cls: "text-muted-foreground" },
 };
 
 export function Ticker() {
   const items = buildItems();
   return (
-    <div className="flex items-center h-9 shrink-0 bg-[#14161d] text-white/85 overflow-hidden border-b border-black/30">
-      <span className="flex items-center gap-1.5 pl-3 sm:pl-4 pr-3 text-[10px] font-extrabold tracking-[0.2em] text-white shrink-0">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#ff3b4e] animate-pulse" />
+    <div className="flex items-center h-8 shrink-0 bg-background text-foreground overflow-hidden border-b">
+      <span className="flex items-center gap-1.5 pl-4 sm:pl-6 pr-4 h-full text-[10px] font-bold tracking-[0.18em] text-foreground shrink-0 border-r">
+        <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
         LIVE
       </span>
       <div className="flex-1 overflow-hidden h-full">
@@ -50,8 +50,8 @@ export function Ticker() {
           {[...items, ...items].map((it, i) => {
             const a = toneArrow[it.tone];
             return (
-              <span key={i} className="flex items-center text-[11.5px] font-semibold whitespace-nowrap pr-9">
-                <span className={cn("mr-1.5 text-[9px]", a.cls)}>{a.glyph}</span>
+              <span key={i} className="flex items-center text-[11.5px] font-medium text-muted-foreground whitespace-nowrap pr-8">
+                <span className={cn("mr-1.5 text-[8px]", a.cls)}>{a.glyph}</span>
                 {it.text}
               </span>
             );

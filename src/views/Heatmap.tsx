@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 // warm heat ramp: low → amber, high → JLL red
 function heatColor(intensity: number) {
-  if (intensity >= 0.85) return "#d6202f";
+  if (intensity >= 0.85) return "#e30613";
   if (intensity >= 0.7) return "#e8552d";
   if (intensity >= 0.6) return "#ef8430";
   if (intensity >= 0.5) return "#f2a93b";
@@ -61,7 +61,7 @@ export function Heatmap() {
             <div className="flex items-center gap-2 text-[11px] font-semibold text-muted-foreground">
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#f4c659" }} /> Warm
               <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#ef8430" }} /> Hot
-              <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#d6202f" }} /> Hottest
+              <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#e30613" }} /> Hottest
             </div>
           </div>
           <div className="relative z-0 isolate rounded-xl overflow-hidden border border-border/60 h-[340px] sm:h-[420px] xl:h-[480px]">
@@ -98,7 +98,7 @@ export function Heatmap() {
               <h3 className="font-display text-[18px] font-black leading-tight tracking-tight">{selected.name}</h3>
               <Badge
                 className={cn(
-                  "rounded-full font-bold text-[10.5px] shrink-0",
+                  "rounded-[2px] font-bold text-[10.5px] shrink-0",
                   selected.tier === "Prime" && "bg-rose-100 text-rose-700 hover:bg-rose-100",
                   selected.tier === "City Fringe" && "bg-amber-100 text-amber-700 hover:bg-amber-100",
                   selected.tier === "Suburban" && "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
@@ -129,7 +129,7 @@ export function Heatmap() {
               <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground mb-1.5">Key malls</div>
               <div className="flex flex-wrap gap-1.5">
                 {selected.keyMalls.map((m) => (
-                  <span key={m} className="rounded-full bg-secondary px-2.5 py-1 text-[11.5px] font-semibold">{m}</span>
+                  <span key={m} className="rounded-[2px] bg-secondary px-2.5 py-1 text-[11.5px] font-semibold">{m}</span>
                 ))}
               </div>
             </div>
@@ -138,7 +138,7 @@ export function Heatmap() {
               <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground mb-1.5">In demand</div>
               <div className="flex flex-wrap gap-1.5">
                 {selected.hotCategories.map((c) => (
-                  <span key={c} className="rounded-full bg-accent px-2.5 py-1 text-[11.5px] font-bold text-accent-foreground">{c}</span>
+                  <span key={c} className="rounded-[2px] bg-accent px-2.5 py-1 text-[11.5px] font-bold text-accent-foreground">{c}</span>
                 ))}
               </div>
             </div>

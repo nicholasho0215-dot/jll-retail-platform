@@ -3,10 +3,23 @@ module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    // Override the default radius scale so the whole UI reads sharp/corporate
+    // (JLL house style). `full` is preserved for dots, avatars and toggles.
+    borderRadius: {
+      none: "0",
+      sm: "2px",
+      DEFAULT: "2px",
+      md: "2px",
+      lg: "3px",
+      xl: "3px",
+      "2xl": "4px",
+      "3xl": "6px",
+      full: "9999px",
+    },
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Archivo"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        sans: ['"Archivo"', 'system-ui', 'sans-serif'],
+        display: ['"Archivo"', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -42,11 +55,6 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {

@@ -121,26 +121,28 @@ export function PageBanner({ view }: { view: ViewId }) {
         </div>
       )}
 
-      <div className="relative h-full flex flex-col justify-end px-5 sm:px-8 pb-5 sm:pb-7">
+      <div className="relative h-full flex flex-col justify-end px-5 sm:px-9 pb-5 sm:pb-8">
         <motion.div
           key={view}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
         >
-          <div className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/60 mb-2">
-            JLL Singapore <span className="text-[#ff5a5a]">/</span> Retail Intelligence
+          <div className="flex items-center gap-2.5 mb-3">
+            <span className="h-[14px] w-[3px] bg-primary" />
+            <span className="text-[10px] font-semibold tracking-[0.22em] uppercase text-white/85">
+              JLL Singapore · Retail Intelligence
+            </span>
           </div>
           <h1
             className={cn(
-              "font-display text-white font-black uppercase leading-[0.95] tracking-[-0.01em]",
-              tall ? "text-[34px] sm:text-[54px]" : "text-[26px] sm:text-[38px]"
+              "font-display text-white font-medium leading-[1.02] tracking-[-0.02em]",
+              tall ? "text-[36px] sm:text-[56px]" : "text-[28px] sm:text-[40px]"
             )}
           >
             {m.title}
           </h1>
-          <div className="mt-3 h-[3px] w-12 bg-[#e0162b]" />
-          <p className="text-white/70 text-[12.5px] sm:text-[13.5px] font-medium mt-3 max-w-[34rem]">{m.subtitle}</p>
+          <p className="text-white/75 text-[13px] sm:text-[14px] font-normal mt-3 max-w-[36rem] leading-relaxed">{m.subtitle}</p>
         </motion.div>
       </div>
     </div>

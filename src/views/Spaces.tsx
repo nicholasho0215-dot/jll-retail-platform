@@ -100,11 +100,11 @@ export function Spaces() {
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex gap-1.5">
           {statusFilters.map((f) => (
-            <button key={f} onClick={() => setStatus(f)} className="relative rounded-full px-3 py-1.5 text-[11.5px] font-bold bg-muted">
+            <button key={f} onClick={() => setStatus(f)} className="relative rounded-[2px] px-3 py-1.5 text-[11.5px] font-bold bg-muted">
               {status === f && (
                 <motion.span
                   layoutId="spaces-status-pill"
-                  className="absolute inset-0 rounded-full bg-foreground"
+                  className="absolute inset-0 rounded-[2px] bg-foreground"
                   transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                 />
               )}
@@ -116,11 +116,11 @@ export function Spaces() {
         </div>
         <div className="flex gap-1.5">
           {tierFilters.map((f) => (
-            <button key={f} onClick={() => setTier(f)} className="relative rounded-full px-3 py-1.5 text-[11.5px] font-semibold bg-muted/60">
+            <button key={f} onClick={() => setTier(f)} className="relative rounded-[2px] px-3 py-1.5 text-[11.5px] font-semibold bg-muted/60">
               {tier === f && (
                 <motion.span
                   layoutId="spaces-tier-pill"
-                  className="absolute inset-0 rounded-full bg-accent"
+                  className="absolute inset-0 rounded-[2px] bg-accent"
                   transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                 />
               )}
@@ -149,13 +149,13 @@ export function Spaces() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-bold text-[14.5px]">{m.mall}</span>
-                    <Badge className={cn("rounded-full text-[10px] font-bold", tierBadge[m.tier])} variant="secondary">{m.tier}</Badge>
+                    <Badge className={cn("rounded-[2px] text-[10px] font-bold", tierBadge[m.tier])} variant="secondary">{m.tier}</Badge>
                   </div>
                   <div className="text-[11.5px] text-muted-foreground font-medium mt-0.5">{m.cluster}</div>
                 </div>
                 <div className="flex items-center gap-2 text-[11.5px] font-bold shrink-0">
-                  {now > 0 && <span className="rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-1">{now} now</span>}
-                  {soon > 0 && <span className="rounded-full bg-amber-100 text-amber-700 px-2.5 py-1">{soon} soon</span>}
+                  {now > 0 && <span className="rounded-[2px] bg-emerald-100 text-emerald-700 px-2.5 py-1">{now} now</span>}
+                  {soon > 0 && <span className="rounded-[2px] bg-amber-100 text-amber-700 px-2.5 py-1">{soon} soon</span>}
                   <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
                 </div>
               </button>
@@ -169,7 +169,7 @@ export function Spaces() {
                           <span className={cn("h-2 w-2 rounded-full shrink-0", sm.dot)} />
                           <span className="font-bold text-[13.5px] tabular-nums">{u.unit}</span>
                           <span className="text-[11.5px] text-muted-foreground font-semibold">{u.level} · {u.sqft.toLocaleString()} sqft</span>
-                          <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", sm.cls)}>{sm.label}</span>
+                          <span className={cn("rounded-[2px] px-2 py-0.5 text-[10px] font-bold", sm.cls)}>{sm.label}</span>
                           <span className="ml-auto text-[13px] font-extrabold tabular-nums">
                             S${u.askPsf.toFixed(1)}<span className="text-[10px] text-muted-foreground font-semibold"> psf/mo</span>
                           </span>
@@ -181,7 +181,7 @@ export function Spaces() {
                           </span>
                           <span className="flex flex-wrap gap-1 ml-auto">
                             {u.suitedFor.map((s) => (
-                              <span key={s} className="rounded-full bg-secondary px-2 py-0.5 text-[10.5px] font-semibold text-secondary-foreground">{s}</span>
+                              <span key={s} className="rounded-[2px] bg-secondary px-2 py-0.5 text-[10.5px] font-semibold text-secondary-foreground">{s}</span>
                             ))}
                           </span>
                         </div>
