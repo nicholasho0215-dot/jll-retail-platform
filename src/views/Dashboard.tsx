@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { motion, animate, useReducedMotion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Minus, Sparkles } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Sparkles, DoorOpen, CalendarClock, ArrowLeftRight, KanbanSquare, ArrowRight } from "lucide-react";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   AreaChart, Area, ReferenceDot,
 } from "recharts";
-import { kpis, rentalTrend, vacancyTrend, supplyPipeline, clusters, type RetailCluster } from "@/data/marketData";
+import { kpis, rentalTrend, vacancyTrend, supplyPipeline, clusters, storeMoves, deals, mallSpaces, type RetailCluster } from "@/data/marketData";
+import type { ViewId } from "@/components/Sidebar";
 import { ClusterMap } from "@/components/ClusterMap";
 import { heatColor } from "@/lib/heat";
 import { cn } from "@/lib/utils";
@@ -176,12 +177,32 @@ function marketRead() {
   return `Island-wide vacancy at ${iv.value}% (${iv.change > 0 ? "+" : ""}${iv.change}pp q-o-q). ${orchard.name} prime holds S$${orchard.rentPsf} psf at ${orchard.vacancy}% vacancy, while ${tight.name.split(" / ")[0]} stays tightest at ${tight.vacancy}%. Retail sales +${rs.value}% y-o-y; ${ta.value}M visitors in April.`;
 }
 
-export function Dashboard() {
+export function Dashboard({ onNavigate }: { onNavigate?: (v: ViewId) => void }) {
   const [metric, setMetric] = useState<Metric>("rents");
   const [emphasis, setEmphasis] = useState<Emphasis>(null);
   const [range, setRange] = useState(9);
   const [selected, setSelected] = useState<RetailCluster>(clusters.find((c) => c.id === "orchard")!);
   const [sortKey, setSortKey] = useState<"rentPsf" | "rentChangeYoY" | "vacancy">("rentPsf");
+
+  // Operational signals for the "Act on it" band
+  const allUnits = mallSpaces.flatMap((m) => m.units);
+  const vacantNow = allUnits.filter((u) => u.status === "vacant").length;
+  const vacantMalls = mallSpaces.filter((m) => m.units.some((u) => u.status === "vacant")).length;
+  const freeingSoon = allUnits.filter((u) => u.status !== "vacant").length;
+  const opens = storeMoves.filter((m) => m.type === "open").length;
+  const closes = storeMoves.filter((m) => m.type === "close").length;
+  const latestMove = [...storeMoves].sort((a, b) => b.date.localeCompare(a.date))[0];
+  const pipelineValue = deals.reduce((s, d) => s + d.value, 0) / 1000;
+  const closing = deals.filter((d) => d.stage === "Negotiating" || d.stage === "Legal").length;
+
+  const ops: { icon: typeof DoorOpen; tint: string; big: string; label: string; sub: string; to: ViewId }[] = [
+    { icon: DoorOpen, tint: "text-emerald-700 bg-emerald-50", big: String(vacantNow), label: "units vacant now", sub: `across ${vacantMalls} malls`, to: "spaces" },
+    { icon: CalendarClock, tint: "text-amber-700 bg-amber-50", big: String(freeingSoon), label: "freeing up soon", sub: "expiring or exiting", to: "spaces" },
+    { icon: ArrowLeftRight, tint: "text-foreground bg-muted", big: `${opens} / ${closes}`, label: "opens / closes", sub: latestMove ? `latest: ${latestMove.brand}` : "", to: "tracker" },
+    { icon: KanbanSquare, tint: "text-[#E30613] bg-[#E30613]/10", big: `S$${pipelineValue.toFixed(1)}M`, label: "pipeline value", sub: `${deals.length} deals · ${closing} closing`, to: "pipeline" },
+  ];
+
+  const rentRank = [...clusters].sort((a, b) => b.rentPsf - a.rentPsf).findIndex((c) => c.id === selected.id) + 1;
 
   const kpiCfg: Record<string, { series?: number[]; focus?: { metric: Metric; emphasis: Emphasis } }> = {
     islandVacancy: { series: vacancySeries, focus: { metric: "vacancy", emphasis: null } },
@@ -228,6 +249,37 @@ export function Dashboard() {
         </div>
       </div>
 
+      {/* Act on it — operational signals that route into the platform */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Act on it</h2>
+          <span className="text-[10.5px] text-muted-foreground hidden sm:inline">Live signals — click to open the workspace</span>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {ops.map((o, i) => (
+            <motion.button
+              key={o.label}
+              type="button"
+              onClick={() => onNavigate?.(o.to)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.05, ease: "easeOut" }}
+              className="group text-left bg-card border rounded-[3px] p-4 hover:border-primary transition-colors duration-150"
+            >
+              <div className="flex items-center justify-between">
+                <span className={cn("h-9 w-9 rounded-[3px] flex items-center justify-center", o.tint)}>
+                  <o.icon className="h-[18px] w-[18px]" />
+                </span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-150" />
+              </div>
+              <div className="font-display text-[24px] font-bold tabular-nums leading-none mt-3">{o.big}</div>
+              <div className="text-[12px] font-semibold mt-1">{o.label}</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{o.sub}</div>
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
       {/* Hero: interactive heatmap + selected cluster */}
       <div className="grid lg:grid-cols-5 gap-5">
         <Card className="rounded-[3px] lg:col-span-3 overflow-hidden">
@@ -244,7 +296,9 @@ export function Dashboard() {
             <motion.div key={selected.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Selected cluster</div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                    Selected cluster · #{rentRank} of {clusters.length} by rent
+                  </div>
                   <h3 className="font-display text-[22px] font-bold leading-tight tracking-tight mt-0.5">{selected.name}</h3>
                 </div>
                 <span className="h-3 w-3 rounded-full mt-1.5 shrink-0" style={{ background: heatColor(selected.intensity) }} />

@@ -112,7 +112,7 @@ export default function App() {
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.28, ease: "easeOut" }}
                 >
-                  <View />
+                  {view === "dashboard" ? <Dashboard onNavigate={navigate} /> : <View />}
                 </motion.div>
               </AnimatePresence>
             </div>
