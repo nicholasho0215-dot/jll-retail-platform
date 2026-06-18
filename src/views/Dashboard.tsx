@@ -81,9 +81,9 @@ function KpiCell({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
       className={cn(
-        "relative bg-card px-4 py-4 sm:px-5 text-left transition-colors duration-150 outline-none",
-        clickable && "hover:bg-muted/50 cursor-pointer",
-        active && "bg-muted/60"
+        "group relative bg-card border rounded-[3px] h-full px-4 py-4 text-left transition-colors duration-150 outline-none",
+        clickable && "hover:border-primary/50 hover:bg-muted/40 cursor-pointer",
+        active && "bg-muted/50 border-primary/60"
       )}
     >
       {active && <span className="absolute left-0 top-0 h-full w-[3px] bg-primary" />}
@@ -219,9 +219,9 @@ export function Dashboard({ onNavigate }: { onNavigate?: (v: ViewId) => void }) 
   const moverMax = Math.max(...clusters.map((c) => (c[sortKey] as number)));
 
   return (
-    <div className="space-y-7 sm:space-y-8">
-      {/* AI market read */}
-      <div className="flex items-start gap-3 border-l-2 border-primary bg-muted/40 px-4 py-3 rounded-r-[3px]">
+    <div className="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-stretch">
+      {/* AI market read — full-width strap */}
+      <div className="col-span-2 lg:col-span-12 flex items-start gap-3 border border-l-[3px] border-l-primary bg-muted/30 px-4 py-3 rounded-[3px]">
         <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
         <div>
           <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground mb-0.5">AI market read · today</div>
@@ -229,109 +229,94 @@ export function Dashboard({ onNavigate }: { onNavigate?: (v: ViewId) => void }) 
         </div>
       </div>
 
-      {/* Interactive KPI rail */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Key indicators</h2>
-          <span className="text-[10.5px] text-muted-foreground hidden sm:inline">Click a metric with a trend to chart it below</span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-px bg-border border rounded-[3px] overflow-hidden">
-          {Object.entries(kpis).map(([key, k], i) => {
-            const cfg = kpiCfg[key];
-            return (
-              <KpiCell
-                key={k.label} k={k} index={i} series={cfg?.series}
-                clickable={!!cfg?.focus} active={isActive(cfg?.focus)}
-                onClick={cfg?.focus ? () => { setMetric(cfg.focus!.metric); setEmphasis(cfg.focus!.emphasis); } : undefined}
-              />
-            );
-          })}
-        </div>
-      </div>
+      {/* Hero map tile */}
+      <Card className="col-span-2 lg:col-span-8 lg:h-[460px] flex flex-col overflow-hidden rounded-[3px]">
+        <SectionTitle sub="Bubble = prime rent · colour = leasing heat · click a cluster">Singapore Retail Map</SectionTitle>
+        <CardContent className="p-0 flex-1 min-h-0">
+          <div className="relative z-0 isolate h-[300px] lg:h-full border-t">
+            <ClusterMap selectedId={selected.id} onSelect={setSelected} />
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Act on it — operational signals that route into the platform */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Act on it</h2>
-          <span className="text-[10.5px] text-muted-foreground hidden sm:inline">Live signals — click to open the workspace</span>
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {ops.map((o, i) => (
-            <motion.button
-              key={o.label}
-              type="button"
-              onClick={() => onNavigate?.(o.to)}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: i * 0.05, ease: "easeOut" }}
-              className="group text-left bg-card border rounded-[3px] p-4 hover:border-primary transition-colors duration-150"
-            >
-              <div className="flex items-center justify-between">
-                <span className={cn("h-9 w-9 rounded-[3px] flex items-center justify-center", o.tint)}>
-                  <o.icon className="h-[18px] w-[18px]" />
-                </span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-150" />
-              </div>
-              <div className="font-display text-[24px] font-bold tabular-nums leading-none mt-3">{o.big}</div>
-              <div className="text-[12px] font-semibold mt-1">{o.label}</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{o.sub}</div>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      {/* Hero: interactive heatmap + selected cluster */}
-      <div className="grid lg:grid-cols-5 gap-5">
-        <Card className="rounded-[3px] lg:col-span-3 overflow-hidden">
-          <SectionTitle sub="Bubble = prime rent · colour = leasing heat · click a cluster">Singapore Retail Map</SectionTitle>
-          <CardContent className="p-0">
-            <div className="relative z-0 isolate h-[300px] sm:h-[360px] border-t">
-              <ClusterMap selectedId={selected.id} onSelect={setSelected} />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-[3px] lg:col-span-2">
-          <CardContent className="pt-5">
-            <motion.div key={selected.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                    Selected cluster · #{rentRank} of {clusters.length} by rent
-                  </div>
-                  <h3 className="font-display text-[22px] font-bold leading-tight tracking-tight mt-0.5">{selected.name}</h3>
+      {/* Selected cluster tile */}
+      <Card className="col-span-2 lg:col-span-4 lg:h-[460px] overflow-y-auto rounded-[3px]">
+        <CardContent className="pt-5">
+          <motion.div key={selected.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                  Selected · #{rentRank} of {clusters.length} by rent
                 </div>
-                <span className="h-3 w-3 rounded-full mt-1.5 shrink-0" style={{ background: heatColor(selected.intensity) }} />
+                <h3 className="font-display text-[22px] font-bold leading-tight tracking-tight mt-0.5">{selected.name}</h3>
               </div>
-              <div className="grid grid-cols-3 gap-px bg-border border rounded-[3px] overflow-hidden mt-4">
-                {[
-                  { v: `$${selected.rentPsf}`, l: "psf/mo" },
-                  { v: `+${selected.rentChangeYoY}%`, l: "rent y-o-y", good: true },
-                  { v: `${selected.vacancy}%`, l: "vacancy" },
-                ].map((s) => (
-                  <div key={s.l} className="bg-card px-2 py-3 text-center">
-                    <div className={cn("font-display text-[19px] font-bold tabular-nums", s.good && "text-emerald-700")}>{s.v}</div>
-                    <div className="text-[10px] font-semibold text-muted-foreground mt-0.5">{s.l}</div>
-                  </div>
+              <span className="h-3 w-3 rounded-full mt-1.5 shrink-0" style={{ background: heatColor(selected.intensity) }} />
+            </div>
+            <div className="grid grid-cols-3 gap-px bg-border border rounded-[3px] overflow-hidden mt-4">
+              {[
+                { v: `$${selected.rentPsf}`, l: "psf/mo" },
+                { v: `+${selected.rentChangeYoY}%`, l: "rent y-o-y", good: true },
+                { v: `${selected.vacancy}%`, l: "vacancy" },
+              ].map((s) => (
+                <div key={s.l} className="bg-card px-2 py-3 text-center">
+                  <div className={cn("font-display text-[19px] font-bold tabular-nums", s.good && "text-emerald-700")}>{s.v}</div>
+                  <div className="text-[10px] font-semibold text-muted-foreground mt-0.5">{s.l}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[12.5px] leading-relaxed text-muted-foreground mt-4">{selected.note}</p>
+            <div className="mt-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.13em] text-muted-foreground mb-1.5">Key malls</div>
+              <div className="flex flex-wrap gap-1.5">
+                {selected.keyMalls.map((m) => (
+                  <span key={m} className="rounded-[2px] bg-muted px-2 py-1 text-[11px] font-semibold">{m}</span>
                 ))}
               </div>
-              <p className="text-[12.5px] leading-relaxed text-muted-foreground mt-4">{selected.note}</p>
-              <div className="mt-4">
-                <div className="text-[10px] font-bold uppercase tracking-[0.13em] text-muted-foreground mb-1.5">Key malls</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {selected.keyMalls.map((m) => (
-                    <span key={m} className="rounded-[2px] bg-muted px-2 py-1 text-[11px] font-semibold">{m}</span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </CardContent>
-        </Card>
-      </div>
+            </div>
+          </motion.div>
+        </CardContent>
+      </Card>
+
+      {/* KPI tiles (click rent/vacancy to drive the chart) */}
+      {Object.entries(kpis).map(([key, k], i) => {
+        const cfg = kpiCfg[key];
+        return (
+          <div key={k.label} className="col-span-1 lg:col-span-2">
+            <KpiCell
+              k={k} index={i} series={cfg?.series}
+              clickable={!!cfg?.focus} active={isActive(cfg?.focus)}
+              onClick={cfg?.focus ? () => { setMetric(cfg.focus!.metric); setEmphasis(cfg.focus!.emphasis); } : undefined}
+            />
+          </div>
+        );
+      })}
+
+      {/* Act on it — operational signal tiles that route into the platform */}
+      {ops.map((o, i) => (
+        <motion.button
+          key={o.label}
+          type="button"
+          onClick={() => onNavigate?.(o.to)}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: i * 0.05, ease: "easeOut" }}
+          className="group col-span-1 lg:col-span-3 text-left bg-card border rounded-[3px] p-4 hover:border-primary transition-colors duration-150"
+        >
+          <div className="flex items-center justify-between">
+            <span className={cn("h-9 w-9 rounded-[3px] flex items-center justify-center", o.tint)}>
+              <o.icon className="h-[18px] w-[18px]" />
+            </span>
+            <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-150" />
+          </div>
+          <div className="font-display text-[24px] font-bold tabular-nums leading-none mt-3">{o.big}</div>
+          <div className="text-[12px] font-semibold mt-1">{o.label}</div>
+          <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{o.sub}</div>
+        </motion.button>
+      ))}
 
       {/* Submarket leaderboard — animated, sortable */}
-      <Card className="rounded-[3px]">
-        <CardHeader className="pb-3">
+      <Card className="col-span-2 lg:col-span-5 lg:h-[440px] flex flex-col rounded-[3px]">
+        <CardHeader className="pb-3 shrink-0">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <CardTitle className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">Submarket Leaderboard</CardTitle>
             <div className="flex gap-1.5">
@@ -345,7 +330,7 @@ export function Dashboard({ onNavigate }: { onNavigate?: (v: ViewId) => void }) 
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-1.5">
+        <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-1.5">
           {movers.map((c) => {
             const val = c[sortKey] as number;
             const pct = Math.max(6, (val / moverMax) * 100);
@@ -370,8 +355,8 @@ export function Dashboard({ onNavigate }: { onNavigate?: (v: ViewId) => void }) 
       </Card>
 
       {/* Focus chart with controls */}
-      <Card className="rounded-[3px]">
-        <CardHeader className="pb-3">
+      <Card className="col-span-2 lg:col-span-7 lg:h-[440px] flex flex-col rounded-[3px]">
+        <CardHeader className="pb-3 shrink-0">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <CardTitle className="font-display text-[13px] font-bold uppercase tracking-[0.08em]">
               {metric === "rents" ? "Prime Floor Rents" : "Island-wide Vacancy"}
@@ -413,13 +398,13 @@ export function Dashboard({ onNavigate }: { onNavigate?: (v: ViewId) => void }) 
             </div>
           )}
         </CardHeader>
-        <CardContent className="h-[260px] sm:h-[300px]">
+        <CardContent className="h-[260px] lg:h-auto lg:flex-1 min-h-0">
           <FocusChart key={`${metric}-${range}`} metric={metric} emphasis={emphasis} range={range} />
         </CardContent>
       </Card>
 
       {/* Supply pipeline */}
-      <Card className="rounded-[3px]">
+      <Card className="col-span-2 lg:col-span-12 rounded-[3px]">
         <SectionTitle sub="2026–29 supply averages ~300k sqft/yr — under half the decade norm; next big wave 2028">New Supply Pipeline</SectionTitle>
         <CardContent className="pt-1">
           <div className="divide-y">
