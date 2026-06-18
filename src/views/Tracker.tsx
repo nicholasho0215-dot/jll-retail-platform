@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, Sparkle } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { storeMoves, weeklyVelocity } from "@/data/marketData";
+import { AnimatedList } from "@/components/AnimatedList";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "F&B", "Fashion", "Beauty", "Lifestyle", "Luxury", "Entertainment"] as const;
@@ -121,37 +122,39 @@ export function Tracker() {
               ))}
             </div>
           </CardHeader>
-          <CardContent className="space-y-2.5">
-            {filtered.map((m) => (
-              <div key={m.id} className="flex gap-3 rounded-xl border border-border/60 p-3.5 hover:bg-muted/30 transition-colors">
-                <div
-                  className={cn(
-                    "h-9 w-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5",
-                    m.type === "open" ? "bg-emerald-100" : "bg-rose-100"
-                  )}
-                >
-                  {m.type === "open"
-                    ? <ArrowUpRight className="h-4.5 w-4.5 text-emerald-600" />
-                    : <ArrowDownRight className="h-4.5 w-4.5 text-rose-600" />}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="font-bold text-[13.5px]">{m.brand}</span>
-                    <Badge variant="secondary" className="rounded-[2px] text-[10px] font-bold">{m.category}</Badge>
-                    <span className={cn("rounded-[2px] px-2 py-0.5 text-[10px] font-bold", signalStyles[m.signal])}>
-                      {m.signal.replace("-", " ")}
-                    </span>
-                    <span className="ml-auto text-[11px] text-muted-foreground font-medium tabular-nums">
-                      {new Date(m.date).toLocaleDateString("en-SG", { day: "numeric", month: "short" })}
-                    </span>
+          <CardContent>
+            <AnimatedList items={filtered} getKey={(m) => m.id} className="space-y-2.5">
+              {(m) => (
+                <div className="flex gap-3 rounded-[3px] border border-border/60 p-3.5 hover:border-primary/40 hover:bg-muted/30 transition-colors duration-150">
+                  <div
+                    className={cn(
+                      "h-9 w-9 rounded-[3px] flex items-center justify-center shrink-0 mt-0.5",
+                      m.type === "open" ? "bg-emerald-100" : "bg-rose-100"
+                    )}
+                  >
+                    {m.type === "open"
+                      ? <ArrowUpRight className="h-4.5 w-4.5 text-emerald-600" />
+                      : <ArrowDownRight className="h-4.5 w-4.5 text-rose-600" />}
                   </div>
-                  <div className="text-[12px] text-muted-foreground font-medium mt-0.5">
-                    {m.location}{m.sqft ? ` · ${m.sqft.toLocaleString()} sqft` : ""}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="font-bold text-[13.5px]">{m.brand}</span>
+                      <Badge variant="secondary" className="rounded-[2px] text-[10px] font-bold">{m.category}</Badge>
+                      <span className={cn("rounded-[2px] px-2 py-0.5 text-[10px] font-bold", signalStyles[m.signal])}>
+                        {m.signal.replace("-", " ")}
+                      </span>
+                      <span className="ml-auto text-[11px] text-muted-foreground font-medium tabular-nums">
+                        {new Date(m.date).toLocaleDateString("en-SG", { day: "numeric", month: "short" })}
+                      </span>
+                    </div>
+                    <div className="text-[12px] text-muted-foreground font-medium mt-0.5">
+                      {m.location}{m.sqft ? ` · ${m.sqft.toLocaleString()} sqft` : ""}
+                    </div>
+                    <p className="text-[12.5px] leading-relaxed mt-1">{m.detail}</p>
                   </div>
-                  <p className="text-[12.5px] leading-relaxed mt-1">{m.detail}</p>
                 </div>
-              </div>
-            ))}
+              )}
+            </AnimatedList>
             {filtered.length === 0 && (
               <p className="text-[13px] text-muted-foreground py-6 text-center">No movements match these filters.</p>
             )}

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Bookmark, BookmarkCheck, Zap, Radio, ExternalLink } from "lucide-react";
 import { news } from "@/data/marketData";
 import { fetchLiveFeed, getBackendUrl, type LiveArticle } from "@/lib/backend";
+import { AnimatedList } from "@/components/AnimatedList";
 import { cn } from "@/lib/utils";
 
 const filters = ["All", "Market", "Deals", "Brands", "Policy", "Competitor"] as const;
@@ -60,10 +61,9 @@ function LiveFeed({ articles }: { articles: LiveArticle[] }) {
 
       <Card className="rounded-xl">
         <CardContent className="pt-2 pb-2 px-0">
-          <div className="divide-y">
-            {items.map((a) => (
+          <AnimatedList items={items} getKey={(a) => a.url} className="divide-y">
+            {(a) => (
               <a
-                key={a.url}
                 href={a.url}
                 target="_blank"
                 rel="noreferrer"
@@ -82,11 +82,11 @@ function LiveFeed({ articles }: { articles: LiveArticle[] }) {
                 </h3>
                 <p className="text-[12.5px] leading-relaxed text-muted-foreground mt-1">{a.summary}</p>
               </a>
-            ))}
-            {items.length === 0 && (
-              <p className="text-[13px] text-muted-foreground py-8 text-center">No articles in this view yet.</p>
             )}
-          </div>
+          </AnimatedList>
+          {items.length === 0 && (
+            <p className="text-[13px] text-muted-foreground py-8 text-center">No articles in this view yet.</p>
+          )}
         </CardContent>
       </Card>
     </div>
@@ -136,9 +136,9 @@ function SnapshotFeed() {
         </span>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {items.map((n) => (
-          <Card key={n.id} className="rounded-xl card-lift">
+      <AnimatedList items={items} getKey={(n) => n.id} className="grid md:grid-cols-2 gap-4">
+        {(n) => (
+          <Card className="rounded-xl card-lift h-full">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="rounded-[2px] text-[10px] font-bold">{n.category}</Badge>
@@ -166,8 +166,8 @@ function SnapshotFeed() {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+      </AnimatedList>
     </div>
   );
 }
